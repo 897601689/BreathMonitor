@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
         try {
             Global.mcu_Com.Open("/dev/ttyMT1", 38400);//电源板
             Global.breath_Com.Open("/dev/ttyMT2", 38400);//呼吸机
-            Global.spo2_Com.Open("/dev/ttyMT3", 38400);//血氧
+            Global.spo2_Com.Open("/dev/ttyMT3", 4800);//血氧
             Log.e(TAG, "串口打开成功！");
         } catch (Exception ex) {
             Log.e(TAG, "串口打开失败！");

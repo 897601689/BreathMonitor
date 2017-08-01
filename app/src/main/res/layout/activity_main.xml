@@ -280,7 +280,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal">
-            <SurfaceView
+            <com.breathmonitor.widgets.MySurfaceView
                 android:layout_width="605px"
                 android:layout_height="116px" />
         </LinearLayout>
@@ -396,7 +396,7 @@
             android:layout_weight="1"
             android:orientation="horizontal">
 
-            <SurfaceView
+            <com.breathmonitor.widgets.MySurfaceView
                 android:layout_width="605px"
                 android:layout_height="116px" />
         </LinearLayout>
