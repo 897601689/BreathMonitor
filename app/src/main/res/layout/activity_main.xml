@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/bg2"
     android:orientation="vertical"
+    android:background="@mipmap/bg"
     android:weightSum="1"
     tools:context="com.breathmonitor.activity.MainActivity">
 
@@ -12,13 +12,7 @@
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/corner"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        android:layout_marginStart="13dp"
-        android:layout_marginEnd="13dp"
-        tools:layout_constraintLeft_creator="1">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -31,9 +25,10 @@
                 android:layout_marginLeft="15dp"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:textStyle="bold"
                 android:text="血氧指夹空"
                 android:textColor="#fff"
-                android:textSize="30sp" />
+                android:textSize="40sp" />
 
 
         </LinearLayout>
@@ -45,20 +40,23 @@
             android:gravity="center"
             android:text="2017-07-24 11:29:30"
             android:textColor="#fff"
-            android:textSize="30sp" />
+            android:textStyle="bold"
+            android:textSize="40sp" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/img_voice"
             android:layout_width="49dp"
             android:layout_height="36dp"
             android:layout_weight="1"
+            android:layout_gravity="center"
             android:gravity="right"
             android:src="@mipmap/sound_on" />
 
         <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="49dp"
-            android:layout_height="36dp"
+            android:id="@+id/img_battery"
+            android:layout_width="20dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="right"
             android:src="@mipmap/battery" />
@@ -102,7 +100,7 @@
                 style="@style/breath_txt"
                 android:text="控制"
                 android:textSize="30sp"
-                tools:text="辅助" />
+                tools:text="控制" />
         </LinearLayout>
         <!-- 潮气量 -->
         <LinearLayout
@@ -117,14 +115,9 @@
                 style="@style/breath_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1200"
+                android:text="--"
                 tools:text="1200" />
 
-            <TextView
-                style="@style/breath_txt"
-                android:text="ml"
-                android:textSize="30sp"
-                tools:text="ml" />
         </LinearLayout>
         <!-- 通气频率 -->
         <LinearLayout
@@ -142,11 +135,6 @@
                 android:text="--"
                 tools:text="10" />
 
-            <TextView
-                style="@style/breath_txt"
-                android:text="bpm"
-                android:textSize="30sp"
-                tools:text="bpm" />
         </LinearLayout>
         <!-- 氧气浓度 -->
         <LinearLayout
@@ -164,22 +152,15 @@
                 android:text="--"
                 tools:text="21" />
 
-            <TextView
-                style="@style/breath_txt"
-                android:text="%"
-                android:textSize="30sp"
-                tools:text="%"
-                tools:ignore="HardcodedText" />
+
         </LinearLayout>
 
     </LinearLayout>
 
-
+    <!-- CO2 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="13dp"
         android:layout_marginTop="86dp"
         android:orientation="horizontal">
 
@@ -222,11 +203,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:ems="2"
-                android:text="50"
-                android:textStyle="bold"
-                android:textColor="#fff"
+                android:text="60"
                 android:textAlignment="center"
-                android:textSize="100sp" />
+                android:textColor="#fff"
+                android:textSize="100sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
@@ -281,12 +262,16 @@
             android:layout_weight="1"
             android:orientation="horizontal">
             <com.breathmonitor.widgets.MySurfaceView
+                android:id="@+id/co2Curve"
                 android:layout_width="605px"
-                android:layout_height="116px" />
+                android:layout_height="116px"
+
+                android:background="#00000000"/>
         </LinearLayout>
 
     </LinearLayout>
 
+    <!-- SpO2 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -341,6 +326,15 @@
                 android:textColor="#fff"
                 android:textSize="100sp"
                 android:textStyle="bold" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="24dp"
+                android:layout_height="110dp"
+                android:indeterminateOnly="false"
+                android:max="15"
+                android:progress="5"
+                android:progressDrawable="@drawable/progress_vertical_gradient_simple_shape" />
         </LinearLayout>
 
         <LinearLayout
@@ -397,6 +391,7 @@
             android:orientation="horizontal">
 
             <com.breathmonitor.widgets.MySurfaceView
+                android:id="@+id/spo2Curve"
                 android:layout_width="605px"
                 android:layout_height="116px" />
         </LinearLayout>

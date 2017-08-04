@@ -1,5 +1,6 @@
 package com.breathmonitor.parsing;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import android_serialport_api.MySerialPort;
 
 public class Breath_Parsing {
 
+    //<editor-fold desc="设置命令">
     /// <summary>
     /// 模式选择-呼吸机当前为急救模式
     /// </summary>
@@ -110,33 +112,62 @@ public class Breath_Parsing {
     /// 主机设置呼吸机停止
     /// </summary>
     public static byte[] bOff = new byte[]{(byte) 0xff, (byte) 0x32, (byte) 0x01, (byte) 0xa7, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0xee};
+    //</editor-fold>
 
-
-    List<Byte> buffer = new ArrayList<Byte>();
+    List<Byte> buffer = new ArrayList<>();
     byte[] data;
-    public String key;
-    public String battery;
+
+
+    private String key;
+    private String battery;
 
     /// 呼吸机起停状态
-    public String b_State;
+    private String b_State;
     /// 呼吸机潮气量
-    public String b_Tidal;
+    private String b_Tidal;
     /// 呼吸机空氧混合模式
-    public String b_Mode;
+    private String b_Mode;
     /// 呼吸机氧气浓度
-    public String b_O2;
+    private String b_O2;
     /// 呼吸机报警
-    public String b_Alarm;
+    private String b_Alarm;
     /// 呼吸机气道压力
-    public String b_Pmb;
+    private String b_Pmb;
 
+    public String getB_State() {
+        return b_State;
+    }
 
-    public void Parsing(byte[] serialPortData) {
+    public String getB_Tidal() {
+        return b_Tidal;
+    }
 
-        int len = serialPortData.length;
+    public String getB_Mode() {
+        return b_Mode;
+    }
+
+    public String getB_O2() {
+        return b_O2;
+    }
+
+    public String getB_Alarm() {
+        return b_Alarm;
+    }
+
+    public void Parsing(List<byte[]> listData) {
+
         int num;
+        /*int len = serialPortData.length;
         for (int i = 0; i < len; i++)   //全部读出
-            buffer.add(serialPortData[i]);
+            buffer.add(serialPortData[i]);*/
+
+        for (int i = 0; i < listData.size(); i++)   //全部读出
+        {
+            for (int j = 0; j < listData.get(i).length; j++) {
+                buffer.add(listData.get(i)[j]);
+            }
+        }
+
         //每次断电 上电 第一次会有干扰 (byte)0xfe
         //   buffer.Remove((byte)0xfe);
         if (buffer.size() >= 12) {
@@ -144,17 +175,10 @@ public class Breath_Parsing {
                 if (i + 11 > buffer.size())//超出数组索引 跳出
                     break;
                 if (buffer.get(i) == (byte) 0xff && buffer.get(i + 11) == (byte) 0xee) {
-
                     num = 12;
-                    data = new byte[num];
-                    for (int j = 0; j < num; j++) {
-                        data[j] = buffer.get(i + j);
-                    }
-                    for (int j = 0; j < num; j++) {
-                        buffer.remove(i);
-                    }
-                    i = -1;//防止 i自加 跳过数据包
-                    Parser(data);
+                    byte[] breath_data = GetData(i, num, buffer);
+                    i = i - 1;//防止 i自加 跳过数据包
+                    Parser(breath_data);
                 }
             }
         }
@@ -403,15 +427,12 @@ public class Breath_Parsing {
             }
         }
         //  String ss = byte2HexStr(cmd,cmd.length);
-
         //  System.out.print(ss);
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-        /**try {
-         cmdPort.Write(cmd);
-         } catch (IOException e) {
-         e.printStackTrace();
-         }*/
+        try {
+            cmdPort.Write(cmd);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private final static char[] mChars = "0123456789ABCDEF".toCharArray();
@@ -426,4 +447,30 @@ public class Breath_Parsing {
         return sb.toString().trim();
     }
 
+    /**
+     * 获取命令数组
+     *
+     * @param i
+     * @param len
+     * @param list
+     * @return
+     */
+    private byte[] GetData(int i, int len, List<Byte> list) {
+        byte[] data = new byte[len];
+        if (list.size() >= len) {
+            for (int index = 0; index < len; index++) {
+                data[index] = list.get(i);
+                list.remove(i);
+            }
+        } else {
+            data = null;
+        }
+        return data;
+    }
+
+    public void GetBreathInfo(MySerialPort cmdPort){
+        SendCmd(cmdPort,bQTidal,null);
+        SendCmd(cmdPort,bQState,null);
+        SendCmd(cmdPort,bQO2,null);
+    }
 }

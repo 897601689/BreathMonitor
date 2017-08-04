@@ -7,7 +7,7 @@ import java.util.List;
  * Created by Administrator on 2017/4/1.
  */
 
-public class Co2_Parsing {
+public class CO2_Parsing {
 
 
     /// <summary>
@@ -109,10 +109,26 @@ public class Co2_Parsing {
 
 
     //CO2曲线
-    public List<Integer> co2_curve = new ArrayList<>();
+    public List<Float> co2_curve = new ArrayList<>();
 
     //同步计数器
     private int sync = 0;
+
+    public List<Float> getCo2_curve() {
+        return co2_curve;
+    }
+
+    public float getEtco2() {
+        return etco2;
+    }
+
+    public int getRr() {
+        return rr;
+    }
+
+    public int getFico2() {
+        return fico2;
+    }
 
     //ETCO2
     public float etco2;
@@ -162,7 +178,7 @@ public class Co2_Parsing {
     List<Byte> buffer = new ArrayList<Byte>();
     byte[] data;
 
-    //解析命令
+    //获取解析数据
     public void Parsing(byte[] serialPortData) {
         co2_curve.clear();
         answer = "";
@@ -377,12 +393,147 @@ public class Co2_Parsing {
 
     }
 
+    //获取解析数据
+    public void Parsing(List<byte[]> listData) {
+        co2_curve.clear();
+        answer = "";
+        int num;
+        for (int i = 0; i < listData.size(); i++)   //全部读出
+        {
+            for (int j = 0; j < listData.get(i).length; j++) {
+                buffer.add(listData.get(i)[j]);
+            }
+        }
+        /*int len = serialPortData.length;
+        for (int i = 0; i < len; i++)   //全部读出
+            buffer.add(serialPortData[i]);*/
+        if (buffer.size() >= 6) {//10
+            // Log.i("LB","buffer size"+buffer.size());
+            //Console.WriteLine(buffer.Count);
+            for (int i = 0; i < buffer.size(); i++) {
+                switch (buffer.get(i)) {
+                    case (byte) 0x80:
+                        //region CO2波形数据
+                        if (i + 1 >= buffer.size())
+                            break;
+                        switch (buffer.get(i + 1)) {
+                            case (byte) 0x04:
+                                if (i + 5 >= buffer.size())
+                                    break;
+                                num = 6;
+                                byte[] CO2_data = GetData(i, num, buffer);
+                                i = i - 1;
+                                // Log.i("LB","data  "+(byte)data[0]+ "  " +(byte)data[3] + "  "+(byte)data[4]);
+                                Parser(CO2_data);
+                                break;
+                            case (byte) 0x05:
+                                if (i + 6 >= buffer.size())
+                                    break;
+                                num = 7;
+                                CO2_data = GetData(i, num, buffer);
+                                i = i - 1;
+                                Parser(CO2_data);
+                                break;
+                            case (byte) 0x07:
+                                if (i + 8 >= buffer.size())
+                                    break;
+                                num = 9;
+                                CO2_data = GetData(i, num, buffer);
+                                i = i - 1;
+                                Parser(CO2_data);
+                                break;
+                            case (byte) 0x0A:
+                                if (i + 11 >= buffer.size())
+                                    break;
+                                num = 12;
+                                CO2_data = GetData(i, num, buffer);
+                                i = i - 1;
+                                Parser(CO2_data);
+                                break;
+                        }
+                        //endregion
+                        break;
+                    case (byte) 0x82:
+                        if (i + 3 >= buffer.size())
+                            break;
+                        num = 4;
+                        byte[] CO2_data = GetData(i, num, buffer);
+                        i = i - 1;
+                        Parser(CO2_data);
+                        break;
+                    case (byte) 0x84:
+                        if (i + 1 >= buffer.size())
+                            break;
+                        switch (buffer.get(i)) {
+                            case (byte) 0x02:
+                                if (i + 3 >= buffer.size())
+                                    break;
+                                num = 4;
+                                CO2_data = GetData(i, num, buffer);
+                                i = i - 1;
+                                Parser(CO2_data);
+                                break;
+                            case (byte) 0x03:
+                                if (i + 4 >= buffer.size())
+                                    break;
+                                num = 5;
+                                CO2_data = GetData(i, num, buffer);
+                                i = i - 1;
+                                Parser(CO2_data);
+                                break;
+                            case (byte) 0x04:
+                                if (i + 5 >= buffer.size())
+                                    break;
+                                num = 6;
+                                CO2_data = GetData(i, num, buffer);
+                                i = i - 1;
+                                Parser(CO2_data);
+                                break;
+                            case (byte) 0x06:
+                                if (i + 7 >= buffer.size())
+                                    break;
+                                num = 8;
+                                CO2_data = GetData(i, num, buffer);
+                                i = i - 1;
+                                Parser(CO2_data);
+                                break;
+                        }
+                        break;
+                    case (byte) 0xC8:
+                        if (i + 3 >= buffer.size())
+                            break;
+                        num = 4;
+                        CO2_data = GetData(i, num, buffer);
+                        i = i - 1;
+                        Parser(CO2_data);
+                        break;
+                    case (byte) 0xC9:
+                        if (i + 3 >= buffer.size())
+                            break;
+                        num = 4;
+                        CO2_data = GetData(i, num, buffer);
+                        i = i - 1;
+                        Parser(CO2_data);
+                        break;
+                    case (byte) 0xCC:
+                        if (i + 3 >= buffer.size())
+                            break;
+                        num = 4;
+                        CO2_data = GetData(i, num, buffer);
+                        i = i - 1;
+                        Parser(CO2_data);
+                        break;
+                }
+            }
+        }
+    }
+
     //开始解析命令
     private void Parser(byte[] data) {
         switch (data[0]) {
             case (byte) 0x80://CO2波形
                 //  Log.i("LB","1");
-                co2_curve.add((128 * data[3] + data[4]) - 1000);
+                co2_curve.add(((128 * data[3] + data[4]) - 1000)/100f);
                 sync = data[2];
 
                 switch (data[1]) {
@@ -541,7 +692,6 @@ public class Co2_Parsing {
         }
     }
 
-
     //计算校验和
     private static byte CheckSum(byte[] cmd) {
         byte sum = 0;
@@ -559,5 +709,26 @@ public class Co2_Parsing {
         cmd_new[cmd.length] = CheckSum(cmd);
         return cmd_new;
         // com.Write(cmd_new,0,cmd_new.Length);
+    }
+
+    /**
+     * 获取命令数组
+     *
+     * @param i
+     * @param len
+     * @param list
+     * @return
+     */
+    private byte[] GetData(int i, int len, List<Byte> list) {
+        byte[] data = new byte[len];
+        if (list.size() >= len) {
+            for (int index = 0; index < len; index++) {
+                data[index] = list.get(i);
+                list.remove(i);
+            }
+        } else {
+            data = null;
+        }
+        return data;
     }
 }
