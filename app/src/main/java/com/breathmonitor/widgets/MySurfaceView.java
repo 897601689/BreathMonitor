@@ -44,12 +44,20 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private int pen = Color.rgb(255, 0, 0);//画笔颜色
     private int textSize = 14;//字体大小
     private int amplitude = 25;//幅值长度
+    private int max = 150; //曲线最大值
+    private int mCurveType = 0;//0 线 1填充
+
+    /**
+     * 111111
+     * @param mCurveType
+     */
+    public void setmCurveType(int mCurveType) {
+        this.mCurveType = mCurveType;
+    }
 
     public void setMax(int max) {
         this.max = max;
     }
-
-    private int max = 150; //曲线最大值
 
     public void setCurve(int curve) {
         this.curve = curve;
@@ -164,7 +172,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             drawCurve();
             Thread.sleep(1000);
             while (mIsDrawing) {
-                Thread.sleep(50);
+                //Thread.sleep(50);
                 drawCurve();
             }
         } catch (InterruptedException e) {
@@ -186,7 +194,14 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 float y2 = curve;
                 float yy1 = getHeight() - (getHeight() * y / max);
                 float yy2 = getHeight() - (getHeight() * y2 / max);
-                mCanvas.drawLine(x, yy1, x + 1, yy2, mPaint);
+
+                if (mCurveType == 0) {
+                    mCanvas.drawLine(x, yy1, x + 1, yy2, mPaint);
+                } else {
+                    mCanvas.drawLine(x, yy1, x + 1, getHeight(), mPaint);
+                    mCanvas.drawLine(x, yy2, x + 1, getHeight(), mPaint);
+                }
+
                 mCanvas.drawText(info, 20, 30, mPaint);
                 if (amplitude != 0) {
                     mCanvas.drawLine(getWidth() - 30, ((getHeight() - amplitude) / 2), getWidth() - 30, ((getHeight() - amplitude) / 2) + amplitude, mPaint);
@@ -195,7 +210,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
                 if (x > getWidth())
                     x = 0;
                 else
-                    x++;
+                    x ++;
             } else {
                 //mCanvas = mSurfaceHolder.lockCanvas();
                 //mCanvas.drawColor(backColor);

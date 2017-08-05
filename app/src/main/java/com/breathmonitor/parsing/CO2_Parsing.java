@@ -546,7 +546,7 @@ public class CO2_Parsing {
                     case (byte) 0x07:
                         switch (data[5]) {
                             case (byte) 0x02://ETCO2值
-                                //etco2 = data[6] * 27 + data[7];
+                                //etCo2 = data[6] * 27 + data[7];
                                 etco2 = (data[6] * 128 + data[7]) / 10.0f;
                                 break;
                             case (byte) 0x03://呼吸率

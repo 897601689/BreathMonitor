@@ -122,13 +122,13 @@ public class Breath_Parsing {
     private String battery;
 
     /// 呼吸机起停状态
-    private String b_State;
+    private String b_State="OFF";
     /// 呼吸机潮气量
     private String b_Tidal;
     /// 呼吸机空氧混合模式
     private String b_Mode;
     /// 呼吸机氧气浓度
-    private String b_O2;
+    private String b_O2="--";
     /// 呼吸机报警
     private String b_Alarm;
     /// 呼吸机气道压力
@@ -349,10 +349,10 @@ public class Breath_Parsing {
                     b_Alarm = "氧气压力高报警消除";
                     break;
                 default:
-                    b_State = null;
-                    b_Tidal = null;
-                    b_Mode = null;
-                    b_O2 = null;
+                    b_State = "--";
+                    b_Tidal = "--";
+                    b_Mode = "--";
+                    b_O2 = "--";
                     b_Alarm = null;
 
                     break;

@@ -32,10 +32,10 @@ public class Mcu_Parsing {
         return charge_State;
     }
 
-    private String bat_State; // 电池状态
-    private String bat_Level; // 电池电量
-    private int ac_dc;        // 适配器状态
-    private int charge_State; // 充电状态
+    private String bat_State=""; // 电池状态
+    private String bat_Level=""; // 电池电量
+    private int ac_dc=0;        // 适配器状态
+    private int charge_State=0; // 充电状态
 
     byte[] mcuData = new byte[]{ (byte)0xff,0x32 ,0x01,(byte)0x80,0x00,0x00,0x00,0x00,0x00,0x00,0x00,(byte)0xee};
 
@@ -80,7 +80,7 @@ public class Mcu_Parsing {
      * @param data 数据数组
      */
     private void Parsing_Mcu(byte[] data) {
-        if (data[1] == 0x32 && data[2] == 0x02) {
+        if (data[1] == 0x32 && data[2] == 0x01) {
 
             bat_Level = String.valueOf((168- (int)data[3])/33 );//电池电量百分百
 
@@ -102,7 +102,7 @@ public class Mcu_Parsing {
                     bat_State = "充满";
                     break;
                 default:
-                    bat_State = null;
+                    bat_State = "";
                     break;
             }
             //</editor-fold>

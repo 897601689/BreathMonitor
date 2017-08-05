@@ -13,8 +13,28 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:textColor">#fff</item>
-        <item name="android:textSize">110sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">140sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:ems">2</item>
+    </style>
+
+    <style name="value_txt">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">120sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:ems">2</item>
+    </style>
+    <style name="alert_txt">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">30sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:ems">2</item>
     </style>

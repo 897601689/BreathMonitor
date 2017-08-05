@@ -21,6 +21,11 @@ public class SpO2_Parsing {
     private String error;      // 错误状态
     private int pi;            //灌注指数
 
+    public String getError() {
+        return error;
+    }
+
+
     List<Integer> spo2_Curve = new ArrayList<>();
 
     public int getSignal_intensity() {
