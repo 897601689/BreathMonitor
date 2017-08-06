@@ -1,6 +1,7 @@
 package com.breathmonitor.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -152,7 +153,7 @@ public class MainActivity extends Activity {
         spo2Curve.setmCurveType(1);
         spo2Curve.setAmplitude(0);
         spo2Curve.setMax(127);
-        try {
+        /*try {
             Global.mcu_Com.Open("/dev/ttyMT1", 9600);//电源板
             Global.breath_Com.Open("/dev/ttyMT2", 38400);//呼吸机
             Global.spo2_Com.Open("/dev/ttyMT3", 4800);//血氧
@@ -160,16 +161,16 @@ public class MainActivity extends Activity {
         } catch (Exception ex) {
             Log.e(TAG, "串口打开失败！");
         }
-        new Thread(new Spo2Thread()).start();
-        new Thread(new BreathCO2Thread()).start();
-        new Thread(new McuThread()).start();
+        //new Thread(new Spo2Thread()).start();
+        //new Thread(new BreathCO2Thread()).start();
+        //new Thread(new McuThread()).start();
         //new Thread(new AlarmAndTime()).start();
         try {
             Global.mcu_Com.Write(breathOn);
             Global.mcu_Com.Write(spo2On);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     //<editor-fold desc="隐藏系统菜单">
@@ -185,10 +186,7 @@ public class MainActivity extends Activity {
         //应用运行时，保持屏幕高亮，不锁屏
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         //隐藏虚拟按键，并且全屏
-        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
-            View v = this.getWindow().getDecorView();
-            v.setSystemUiVisibility(View.GONE);
-        } else if (Build.VERSION.SDK_INT >= 19) {
+        if (Build.VERSION.SDK_INT >= 19) {
             //for new api versions.
             View decorView = getWindow().getDecorView();
             int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -283,27 +281,38 @@ public class MainActivity extends Activity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.txt_time:
+                Log.e(TAG, "onViewClicked: 时间设置");
                 break;
             case R.id.img_voice:
+                Log.e(TAG, "onViewClicked: 静音");
                 break;
             case R.id.img_lock:
+                Log.e(TAG, "onViewClicked: 锁");
                 break;
             case R.id.breath_set:
+                Log.e(TAG, "onViewClicked: breath");
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, BreathActivity.class);
+                startActivity(intent);
                 break;
             case R.id.txt_switch:
                 if ("OFF".equals(txtSwitch.getText())) {
-                    breath.SendCmd(Global.breath_Com, Breath_Parsing.bOn, null);
+                    Breath_Parsing.SendCmd(Global.breath_Com, Breath_Parsing.bOn, null);
                 } else {
-                    breath.SendCmd(Global.breath_Com, Breath_Parsing.bOff, null);
+                    Breath_Parsing.SendCmd(Global.breath_Com, Breath_Parsing.bOff, null);
                 }
                 break;
             case R.id.layout_resp:
+                Log.e(TAG, "onViewClicked: resp");
                 break;
             case R.id.layout_etCo2:
+                Log.e(TAG, "onViewClicked: etCO2");
                 break;
             case R.id.layout_spo2:
+                Log.e(TAG, "onViewClicked: spo2");
                 break;
             case R.id.layout_pulse:
+                Log.e(TAG, "onViewClicked: pulse");
                 break;
         }
     }
@@ -311,7 +320,7 @@ public class MainActivity extends Activity {
     //</editor-fold>
 
     //呼吸机CO2解析线程
-    public class BreathCO2Thread implements Runnable {
+    private class BreathCO2Thread implements Runnable {
 
         @Override
         public void run() {
@@ -352,7 +361,7 @@ public class MainActivity extends Activity {
     }
 
     //血氧解析线程
-    public class Spo2Thread implements Runnable {
+    private class Spo2Thread implements Runnable {
 
         @Override
         public void run() {
@@ -390,7 +399,7 @@ public class MainActivity extends Activity {
     byte[] mcuData = new byte[]{(byte) 0xff, 0x32, 0x01, (byte) 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xee};
 
     //单片机解析线程(电池状态)
-    public class McuThread implements Runnable {
+    private class McuThread implements Runnable {
 
         @Override
         public void run() {

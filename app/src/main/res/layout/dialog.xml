@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/cancel_layout"
-    android:layout_width="900dp"
-    android:layout_height="600dp"
+    android:layout_width="890dp"
+    android:layout_height="590dp"
     android:layout_gravity="center"
     android:background="@mipmap/dialog">
 
     <TextView
         android:id="@+id/dialog_txt"
-        android:layout_width="match_parent"
+        android:layout_width="870dp"
         android:layout_height="80dp"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="95dp"
@@ -20,9 +20,119 @@
         android:textSize="40sp" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/linearLayout2"
+        android:layout_width="870dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dialog_txt">
+        android:layout_above="@+id/dialog_btn_layout"
+        android:layout_below="@+id/dialog_txt"
+        android:layout_marginLeft="95dp"
+        android:layout_marginRight="95dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="352dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:ems="4"
+                    android:text="工作模式"
+                    android:textSize="25sp" />
+
+                <Spinner
+                    android:id="@+id/spinner1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="69dp"
+                    android:entries="@+array/breath_Mode" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:ems="4"
+                    android:text="氧气浓度"
+                    android:textSize="25sp" />
+
+                <Spinner
+                    android:id="@+id/spinner2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="69dp"
+                    android:entries="@+array/breath_O2" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="352dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:ems="4"
+                    android:text="通气频率"
+                    android:textSize="25sp" />
+
+                <Spinner
+                    android:id="@+id/spinner3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="69dp"
+                    android:entries="@+array/breath_Frequency" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:ems="4"
+                    android:text="潮气量"
+                    android:textSize="25sp" />
+
+                <Spinner
+                    android:id="@+id/spinner4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="69dp"
+                    android:entries="@+array/breath_Tidal" />
+            </LinearLayout>
+
+
+        </LinearLayout>
 
 
     </LinearLayout>
@@ -56,5 +166,6 @@
             android:textColor="#ffffff"
             android:textSize="30sp" />
     </LinearLayout>
+
 
 </RelativeLayout>
