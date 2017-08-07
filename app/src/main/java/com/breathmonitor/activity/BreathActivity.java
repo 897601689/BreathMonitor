@@ -5,7 +5,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -88,6 +87,8 @@ public class BreathActivity extends Activity {
 
     }
 
+    //</editor-fold>
+
     @OnClick({R.id.cancel_cancel_txt, R.id.cancel_sure_txt})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -128,6 +129,4 @@ public class BreathActivity extends Activity {
                 break;
         }
     }
-
-    //</editor-fold>
 }

@@ -43,7 +43,7 @@ public class BreathCO2 {
 
 
         TypeConfig breathConfig = new TypeConfig();
-        breathConfig.name = "breath";
+        breathConfig.name = "Breath";
         breathConfig.start = (byte) 0xff;
         breathConfig.end = (byte) 0xee;
         breathConfig.maxLength = 14;      //12  + 头尾
@@ -156,7 +156,7 @@ public class BreathCO2 {
                                 mCo2Datas.add(data1);
                             }
 
-                            if (mFindType.name == "breath") {
+                            if (mFindType.name == "Breath") {
                                 Byte[] data = mDatas.toArray(new Byte[mDatas.size()]);
                                 int length = data.length;
                                 byte[] data1 = new byte[length];

@@ -20,12 +20,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.breathmonitor.R;
+import com.breathmonitor.bean.Breath;
 import com.breathmonitor.parsing.Breath_Parsing;
 import com.breathmonitor.parsing.CO2_Parsing;
 import com.breathmonitor.parsing.Mcu_Parsing;
 import com.breathmonitor.parsing.SpO2_Parsing;
 import com.breathmonitor.parsing.co2Breath.BreathCO2;
 import com.breathmonitor.util.Global;
+import com.breathmonitor.util.MonitorApplication;
 import com.breathmonitor.widgets.AlarmImageView;
 import com.breathmonitor.widgets.MySurfaceView;
 
@@ -116,7 +118,7 @@ public class MainActivity extends Activity {
     //</editor-fold>
 
     String TAG = "MainActivity";
-
+    MonitorApplication mApp;
     BreathCO2 BreathCo2 = new BreathCO2(Global.breath_Com);
     Breath_Parsing breath = new Breath_Parsing();
     CO2_Parsing co2 = new CO2_Parsing();
@@ -129,6 +131,7 @@ public class MainActivity extends Activity {
 
     byte[] breathOn = new byte[]{(byte) 0xff, 0x32, 0x01, (byte) 0x81, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xee};
     byte[] spo2On = new byte[]{(byte) 0xff, 0x32, 0x01, (byte) 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xee};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,8 +141,32 @@ public class MainActivity extends Activity {
         ButterKnife.bind(this);
 
         init();
+
+        initInfo();
     }
 
+    private void initInfo() {
+        mApp =  (MonitorApplication) getApplication();
+        Breath mBreath = mApp.getBreathShared();
+        if(mBreath==null){
+            Log.e(TAG, "initInfo: " );
+        }
+    }
+
+    //Activity创建或者从被覆盖、后台重新回到前台时被调用
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e(TAG, "onResume called.");
+    }
+
+    //Activity被覆盖到下面或者锁屏时被调用
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e(TAG, "onPause called.");
+        //有可能在执行完onPause或onStop后,系统资源紧张将Activity杀死,所以有必要在此保存持久数据
+    }
 
     private void init() {
 
@@ -153,7 +180,7 @@ public class MainActivity extends Activity {
         spo2Curve.setmCurveType(1);
         spo2Curve.setAmplitude(0);
         spo2Curve.setMax(127);
-        /*try {
+        try {
             Global.mcu_Com.Open("/dev/ttyMT1", 9600);//电源板
             Global.breath_Com.Open("/dev/ttyMT2", 38400);//呼吸机
             Global.spo2_Com.Open("/dev/ttyMT3", 4800);//血氧
@@ -161,16 +188,16 @@ public class MainActivity extends Activity {
         } catch (Exception ex) {
             Log.e(TAG, "串口打开失败！");
         }
-        //new Thread(new Spo2Thread()).start();
-        //new Thread(new BreathCO2Thread()).start();
-        //new Thread(new McuThread()).start();
-        //new Thread(new AlarmAndTime()).start();
+        new Thread(new Spo2Thread()).start();
+        new Thread(new BreathCO2Thread()).start();
+        new Thread(new McuThread()).start();
+        new Thread(new AlarmAndTime()).start();
         try {
             Global.mcu_Com.Write(breathOn);
             Global.mcu_Com.Write(spo2On);
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     //<editor-fold desc="隐藏系统菜单">
@@ -210,7 +237,7 @@ public class MainActivity extends Activity {
                         String[] arrayTd = breath.getB_Tidal().split(" ");
                         txtTidal.setText(arrayTd[0]);
                         txtFrequency.setText(arrayTd[1]);
-                        Log.e(TAG, breath.getB_State() + "  " + arrayTd[0] + "  " + arrayTd[1] + "  " + breath.getB_O2());
+                        //Log.e(TAG, Breath.getB_State() + "  " + arrayTd[0] + "  " + arrayTd[1] + "  " + Breath.getB_O2());
                     }
                     txtO2.setText(String.valueOf(breath.getB_O2()));
 
@@ -290,9 +317,8 @@ public class MainActivity extends Activity {
                 Log.e(TAG, "onViewClicked: 锁");
                 break;
             case R.id.breath_set:
-                Log.e(TAG, "onViewClicked: breath");
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this, BreathActivity.class);
+                Log.e(TAG, "onViewClicked: Breath");
+                Intent intent = new Intent(MainActivity.this, BreathActivity.class);
                 startActivity(intent);
                 break;
             case R.id.txt_switch:
@@ -304,15 +330,43 @@ public class MainActivity extends Activity {
                 break;
             case R.id.layout_resp:
                 Log.e(TAG, "onViewClicked: resp");
+                intent = new Intent(MainActivity.this, DialogActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("title", "呼吸报警限设置");
+                bundle.putString("limit_H", this.txtRespAlertH.getText().toString());
+                bundle.putString("limit_L", this.txtRespAlertL.getText().toString());
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case R.id.layout_etCo2:
                 Log.e(TAG, "onViewClicked: etCO2");
+                intent = new Intent(MainActivity.this, DialogActivity.class);
+                bundle = new Bundle();
+                bundle.putString("title", "CO2报警限设置");
+                bundle.putString("limit_H", this.txtEtCo2AlertH.getText().toString());
+                bundle.putString("limit_L", this.txtEtCo2AlertL.getText().toString());
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case R.id.layout_spo2:
                 Log.e(TAG, "onViewClicked: spo2");
+                intent = new Intent(MainActivity.this, DialogActivity.class);
+                bundle = new Bundle();
+                bundle.putString("title", "血氧报警限设置");
+                bundle.putString("limit_H", this.txtSpo2AlertH.getText().toString());
+                bundle.putString("limit_L", this.txtSpo2AlertL.getText().toString());
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case R.id.layout_pulse:
                 Log.e(TAG, "onViewClicked: pulse");
+                intent = new Intent(MainActivity.this, DialogActivity.class);
+                bundle = new Bundle();
+                bundle.putString("title", "脉率报警限设置");
+                bundle.putString("limit_H", this.txtPulseAlertH.getText().toString());
+                bundle.putString("limit_L", this.txtPulseAlertL.getText().toString());
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
         }
     }

@@ -23,5 +23,5 @@ android:shape="rectangle">
     android:color="#99CCFF" />
 
 <!-- 背景色 -->
-<solid android:color="#99CCFF"></solid>
+<solid android:color="#00000000"></solid>
 </shape>

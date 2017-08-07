@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cancel_layout"
+    android:layout_width="890dp"
+    android:layout_height="590dp"
+    android:layout_gravity="center"
+    android:background="@mipmap/dialog">
+
+    <TextView
+        android:id="@+id/dialog_txt"
+        android:layout_width="870dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="95dp"
+        android:layout_marginTop="47dp"
+        android:background="#ffff00"
+        android:gravity="center"
+        android:text="呼吸设置"
+        android:textColor="#000"
+        android:textSize="40sp" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="870dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/dialog_btn_layout"
+        android:layout_below="@+id/dialog_txt"
+        android:layout_marginLeft="95dp"
+        android:layout_marginRight="95dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="352dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="报警开关"
+                android:textAlignment="center"
+                android:textSize="25sp" />
+
+            <com.breathmonitor.widgets.SwitchView
+                android:id="@+id/switchView"
+                android:layout_width="78dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.11"
+                app:hasShadow="true"
+                app:isOpened="true"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="352dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:ems="4"
+                    android:text="上限"
+                    android:textAlignment="center"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:id="@+id/txt_h"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/corner"
+                    android:ems="4"
+                    android:text="50"
+                    android:textAlignment="center"
+                    android:textSize="45sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:ems="4"
+                    android:text="下限"
+                    android:textAlignment="center"
+                    android:textSize="25sp" />
+
+                <TextView
+                    android:id="@+id/txt_l"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/corner"
+                    android:ems="4"
+                    android:text="20"
+                    android:textAlignment="center"
+                    android:textSize="45sp" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_btn_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="80dp">
+
+        <TextView
+            android:id="@+id/cancel_cancel_txt"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:layout_marginRight="150dp"
+            android:background="@drawable/btn_bg"
+            android:gravity="center"
+            android:text="取消"
+            android:textColor="#ffffff"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/cancel_sure_txt"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:background="@drawable/btn_bg"
+            android:gravity="center"
+            android:text="确定"
+            android:textColor="#ffffff"
+            android:textSize="30sp" />
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -27,4 +27,9 @@
         <item>1200</item>
         <item>1500</item>
     </string-array>
+
+    <string-array name="WheelArrayDefault">
+
+    </string-array>
+
 </resources>
