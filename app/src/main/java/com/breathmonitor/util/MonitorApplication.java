@@ -38,20 +38,20 @@ public class MonitorApplication extends Application {
 
     public void setBreathShared(Breath breath) {
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString("breath_Mode", breath.getB_O2());
-        editor.putString("breath_O2", breath.getB_O2());
-        editor.putString("breath_Hz", breath.getB_Hz());
+        editor.putString("breath_Mode", breath.getB_Mode());
         editor.putString("breath_Tidal", breath.getB_Tidal());
+        editor.putString("breath_Hz", breath.getB_Hz());
+        editor.putString("breath_O2", breath.getB_O2());
         //editor.commit();
         editor.apply();
     }
 
     public Breath getBreathShared() {
-        String o2 = sp.getString("breath_Mode", "20");
-        String mode = sp.getString("breath_O2", "20");
-        String hz = sp.getString("breath_Tidal", "30");
-        String tidal = sp.getString("breath_Hz", "30");
-        return new Breath(o2, mode, hz, tidal);
+        String mode = sp.getString("breath_Mode", "控制");
+        String tidal = sp.getString("breath_Tidal", "700");
+        String hz = sp.getString("breath_Hz", "10");
+        String o2 = sp.getString("breath_O2", "21");
+        return new Breath(mode, tidal, hz, o2);
     }
 
 

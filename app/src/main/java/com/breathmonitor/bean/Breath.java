@@ -6,10 +6,11 @@ package com.breathmonitor.bean;
 
 public class Breath {
 
-    private String b_O2;
+
+    private String b_Mode = "control";
     private String b_Tidal;
     private String b_Hz;
-    private String b_Mode = "control";
+    private String b_O2;
 
     public String getB_O2() {
         return b_O2;
@@ -56,10 +57,10 @@ public class Breath {
     @Override
     public String toString() {
         return "Breath{" +
-                "b_O2='" + b_O2 + '\'' +
+                "b_Mode='" + b_Mode + '\'' +
                 ", b_Tidal='" + b_Tidal + '\'' +
                 ", b_Hz='" + b_Hz + '\'' +
-                ", b_Mode='" + b_Mode + '\'' +
+                ", b_O2='" + b_O2 + '\'' +
                 '}';
     }
 

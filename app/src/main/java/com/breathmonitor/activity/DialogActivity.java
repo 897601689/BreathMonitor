@@ -53,6 +53,30 @@ public class DialogActivity extends Activity {
         init();
     }
 
+    //Activity创建或者从被覆盖、后台重新回到前台时被调用
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("TAG", "onResume called.");
+        //隐藏虚拟按键，并且全屏
+        if (Build.VERSION.SDK_INT >= 19) {
+            //for new api versions.
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
+    }
+
+    //Activity被覆盖到下面或者锁屏时被调用
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e("TAG", "onPause called.");
+        //有可能在执行完onPause或onStop后,系统资源紧张将Activity杀死,所以有必要在此保存持久数据
+    }
+
+
     private void init() {
         //新页面接收数据
         Bundle bundle = this.getIntent().getExtras();

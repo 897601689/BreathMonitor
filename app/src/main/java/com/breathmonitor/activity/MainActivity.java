@@ -146,10 +146,10 @@ public class MainActivity extends Activity {
     }
 
     private void initInfo() {
-        mApp =  (MonitorApplication) getApplication();
+        mApp = (MonitorApplication) getApplication();
         Breath mBreath = mApp.getBreathShared();
-        if(mBreath==null){
-            Log.e(TAG, "initInfo: " );
+        if (mBreath != null) {
+            Log.e(TAG, "initInfo: "+mBreath.toString());
         }
     }
 
@@ -157,14 +157,22 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e(TAG, "onResume called.");
+        //Log.e(TAG, "onResume called.");
+        //隐藏虚拟按键，并且全屏
+        if (Build.VERSION.SDK_INT >= 19) {
+            //for new api versions.
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
     }
 
     //Activity被覆盖到下面或者锁屏时被调用
     @Override
     protected void onPause() {
         super.onPause();
-        Log.e(TAG, "onPause called.");
+        //Log.e(TAG, "onPause called.");
         //有可能在执行完onPause或onStop后,系统资源紧张将Activity杀死,所以有必要在此保存持久数据
     }
 
@@ -180,7 +188,7 @@ public class MainActivity extends Activity {
         spo2Curve.setmCurveType(1);
         spo2Curve.setAmplitude(0);
         spo2Curve.setMax(127);
-        try {
+        /*try {
             Global.mcu_Com.Open("/dev/ttyMT1", 9600);//电源板
             Global.breath_Com.Open("/dev/ttyMT2", 38400);//呼吸机
             Global.spo2_Com.Open("/dev/ttyMT3", 4800);//血氧
@@ -197,7 +205,7 @@ public class MainActivity extends Activity {
             Global.mcu_Com.Write(spo2On);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     //<editor-fold desc="隐藏系统菜单">
@@ -303,6 +311,7 @@ public class MainActivity extends Activity {
             super.handleMessage(msg);
         }
     };
+    //</editor-fold>
 
     @OnClick({R.id.txt_time, R.id.img_voice, R.id.img_lock, R.id.breath_set, R.id.txt_switch, R.id.layout_resp, R.id.layout_etCo2, R.id.layout_spo2, R.id.layout_pulse})
     public void onViewClicked(View view) {
@@ -371,7 +380,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    //</editor-fold>
 
     //呼吸机CO2解析线程
     private class BreathCO2Thread implements Runnable {
@@ -473,7 +481,7 @@ public class MainActivity extends Activity {
     }
 
     //报警和时间显示
-    public class AlarmAndTime implements Runnable {
+    private class AlarmAndTime implements Runnable {
 
         @Override
         public void run() {
@@ -488,28 +496,52 @@ public class MainActivity extends Activity {
         }
     }
 
+    //<editor-fold desc="报警判断">
     private void Alarm() {
+        //呼吸率报警
+        AddAlarmInfo(txtResp, txtRespAlertH, txtRespAlertL, imgRespAlarm, Global.resp_alarm, "呼吸率");
+        //CO2报警
+        AddAlarmInfo(txtEtCo2, txtEtCo2AlertH, txtEtCo2AlertL, imgEtCo2Alarm, Global.etCo2_alarm, "CO2");
+        //血氧报警
+        AddAlarmInfo(txtSpo2, txtSpo2AlertH, txtSpo2AlertL, imgSpo2Alarm, Global.spo2_alarm, "血氧");
+        //脉率报警
+        AddAlarmInfo(txtPulse, txtPulseAlertH, txtPulseAlertL, imgPulseAlarm, Global.pulse_alarm, "脉率");
+    }
+
+    /**
+     * 添加报警信息
+     *
+     * @param value   当前显示值
+     * @param alertH  上限值
+     * @param alertL  下限值
+     * @param img     报警图片
+     * @param mSwitch 报警开关
+     * @param name    报警项
+     */
+    private void AddAlarmInfo(TextView value, TextView alertH, TextView alertL, AlarmImageView img, boolean mSwitch, String name) {
         float now = 0;
-        int H = Integer.parseInt(txtEtCo2AlertH.getText().toString());
-        int L = Integer.parseInt(txtEtCo2AlertL.getText().toString());
-        if (!"--".equals(txtEtCo2.getText())) {
-            now = Float.parseFloat(txtEtCo2.getText().toString());
-        }
-        if (now > H) {
-            imgEtCo2Alarm.setLevel(2);
-            if (Global.etCo2_alarm) {
-                if (!mSafeAlertMessage.contains("Co2过高"))
-                    mSafeAlertMessage.add("Co2过高");
+        int H = Integer.parseInt(alertH.getText().toString());
+        int L = Integer.parseInt(alertL.getText().toString());
+        if (!"--".equals(value.getText())) {
+            now = Float.parseFloat(value.getText().toString());
+
+            if (now > H) {
+                img.setLevel(2);
+                if (mSwitch) {
+                    if (!mSafeAlertMessage.contains(name + "过高"))
+                        mSafeAlertMessage.add(name + "过高");
+                }
+            } else if (now < L) {
+                img.setLevel(2);
+                if (mSwitch) {
+                    if (!mSafeAlertMessage.contains(name + "过低"))
+                        mSafeAlertMessage.add(name + "过低");
+                }
+            } else {
+                img.setLevel(0);
             }
-        } else if (now < L) {
-            imgEtCo2Alarm.setLevel(2);
-            if (Global.etCo2_alarm) {
-                if (!mSafeAlertMessage.contains("Co2过低"))
-                    mSafeAlertMessage.add("Co2过低");
-            }
-        } else {
-            imgEtCo2Alarm.setLevel(0);
         }
     }
+    //</editor-fold>
 
 }

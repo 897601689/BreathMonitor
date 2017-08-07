@@ -15,5 +15,8 @@ public class Global {
 
     public static Breath_Parsing breath = new Breath_Parsing(); //呼吸机解析对象
 
-    public static boolean etCo2_alarm = true;
+    public static boolean resp_alarm = true;//报警开关
+    public static boolean etCo2_alarm = true;//报警开关
+    public static boolean spo2_alarm = true;//报警开关
+    public static boolean pulse_alarm = true;//报警开关
 }
