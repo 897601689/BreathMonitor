@@ -1,6 +1,7 @@
 package com.breathmonitor.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -12,14 +13,14 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.breathmonitor.R;
+import com.breathmonitor.bean.Alert;
+import com.breathmonitor.util.Global;
 import com.breathmonitor.widgets.MyDialog;
 import com.breathmonitor.widgets.SwitchView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by admin on 2017/8/7.
@@ -40,8 +41,10 @@ public class DialogActivity extends Activity {
     TextView cancelSureTxt;
 
 
-    private static final String[] limits = new String[300];
+    //private static final String[] limits = new String[300];
+    public static final String action = "jason.broadcast.action";
 
+    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,11 +84,12 @@ public class DialogActivity extends Activity {
         //新页面接收数据
         Bundle bundle = this.getIntent().getExtras();
         //接收name值
-        String name = bundle.getString("title");
+        String title = bundle.getString("title");
+        name = bundle.getString("name");
         String limit_H = bundle.getString("limit_H");
         String limit_L = bundle.getString("limit_L");
 
-        dialogTxt.setText(name);//设置标题文字
+        dialogTxt.setText(title + "报警限设置");//设置标题文字
         txtH.setText(limit_H);
         txtL.setText(limit_L);
     }
@@ -95,27 +99,33 @@ public class DialogActivity extends Activity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.txt_h:
-                MyDialog myDialog = new MyDialog(DialogActivity.this,Integer.parseInt(txtH.getText().toString()),txtH);
+                MyDialog myDialog = new MyDialog(DialogActivity.this, Integer.parseInt(txtH.getText().toString()), txtH);
                 myDialog.show();
                 break;
             case R.id.txt_l:
-                myDialog = new MyDialog(DialogActivity.this,Integer.parseInt(txtL.getText().toString()),txtL);
+                myDialog = new MyDialog(DialogActivity.this, Integer.parseInt(txtL.getText().toString()), txtL);
                 myDialog.show();
                 break;
             case R.id.cancel_cancel_txt:
                 finish();
                 break;
             case R.id.cancel_sure_txt:
-                Log.e(TAG, "onViewClicked: " + switchView.isOpened());
+                Global.mApp.setAlertShared(name, new Alert(switchView.isOpened(),
+                        Integer.parseInt(txtH.getText().toString()),
+                        Integer.valueOf(txtL.getText().toString())));
 
+                Intent intent = new Intent(action);
+                intent.putExtra("name",name);
+                intent.putExtra("limitH", txtH.getText().toString());
+                intent.putExtra("limitL", txtL.getText().toString());
+                sendBroadcast(intent);
                 finish();
                 break;
         }
     }
 
 
-    //<editor-fold desc="隐藏系统菜单">
-
+    //隐藏系统菜单
     private void hideSystemUIMenu() {
         //实现无标题栏（但有系统自带的任务栏）
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -137,5 +147,5 @@ public class DialogActivity extends Activity {
 
     }
 
-    //</editor-fold>
+
 }

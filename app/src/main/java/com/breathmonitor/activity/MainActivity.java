@@ -1,7 +1,10 @@
 package com.breathmonitor.activity;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -20,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.breathmonitor.R;
+import com.breathmonitor.bean.Alert;
 import com.breathmonitor.bean.Breath;
 import com.breathmonitor.parsing.Breath_Parsing;
 import com.breathmonitor.parsing.CO2_Parsing;
@@ -118,9 +122,8 @@ public class MainActivity extends Activity {
     //</editor-fold>
 
     String TAG = "MainActivity";
-    MonitorApplication mApp;
+
     BreathCO2 BreathCo2 = new BreathCO2(Global.breath_Com);
-    Breath_Parsing breath = new Breath_Parsing();
     CO2_Parsing co2 = new CO2_Parsing();
     SpO2_Parsing spo2 = new SpO2_Parsing(); //血氧协议解析
     Mcu_Parsing mcu = new Mcu_Parsing();//单片机协议解析
@@ -143,14 +146,6 @@ public class MainActivity extends Activity {
         init();
 
         initInfo();
-    }
-
-    private void initInfo() {
-        mApp = (MonitorApplication) getApplication();
-        Breath mBreath = mApp.getBreathShared();
-        if (mBreath != null) {
-            Log.e(TAG, "initInfo: "+mBreath.toString());
-        }
     }
 
     //Activity创建或者从被覆盖、后台重新回到前台时被调用
@@ -176,6 +171,13 @@ public class MainActivity extends Activity {
         //有可能在执行完onPause或onStop后,系统资源紧张将Activity杀死,所以有必要在此保存持久数据
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
+
+    }
+
     private void init() {
 
         co2Curve.setBackColor(Color.TRANSPARENT);//设置背景颜色
@@ -188,7 +190,7 @@ public class MainActivity extends Activity {
         spo2Curve.setmCurveType(1);
         spo2Curve.setAmplitude(0);
         spo2Curve.setMax(127);
-        /*try {
+        try {
             Global.mcu_Com.Open("/dev/ttyMT1", 9600);//电源板
             Global.breath_Com.Open("/dev/ttyMT2", 38400);//呼吸机
             Global.spo2_Com.Open("/dev/ttyMT3", 4800);//血氧
@@ -205,8 +207,36 @@ public class MainActivity extends Activity {
             Global.mcu_Com.Write(spo2On);
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
+
+    private void initInfo() {
+        Global.mApp = (MonitorApplication) getApplication();
+        Breath mBreath = Global.mApp.getBreathShared();
+        if (mBreath != null) {
+            Log.e(TAG, "initInfo: " + mBreath.toString());
+        }
+        Alert alert = Global.mApp.getAlertShared("Resp");
+        Global.resp_alarm = alert.isAlarmSwitch();
+        txtRespAlertH.setText(String.valueOf(alert.getAlert_H()));
+        txtRespAlertL.setText(String.valueOf(alert.getAlert_L()));
+
+        alert = Global.mApp.getAlertShared("EtCO2");
+        Global.etCo2_alarm = alert.isAlarmSwitch();
+        txtEtCo2AlertH.setText(String.valueOf(alert.getAlert_H()));
+        txtEtCo2AlertL.setText(String.valueOf(alert.getAlert_L()));
+
+        alert = Global.mApp.getAlertShared("SpO2");
+        Global.spo2_alarm = alert.isAlarmSwitch();
+        txtSpo2AlertH.setText(String.valueOf(alert.getAlert_H()));
+        txtSpo2AlertL.setText(String.valueOf(alert.getAlert_L()));
+
+        alert = Global.mApp.getAlertShared("Pulse");
+        Global.pulse_alarm = alert.isAlarmSwitch();
+        txtPulseAlertH.setText(String.valueOf(alert.getAlert_H()));
+        txtPulseAlertL.setText(String.valueOf(alert.getAlert_L()));
+    }
+
 
     //<editor-fold desc="隐藏系统菜单">
 
@@ -240,18 +270,26 @@ public class MainActivity extends Activity {
             switch (msg.what) {
                 case 101://呼吸机 CO2
                     //<editor-fold desc="呼吸机 CO2">
-                    txtSwitch.setText(String.valueOf(breath.getB_State()));
-                    if (breath.getB_Tidal() != null) {
-                        String[] arrayTd = breath.getB_Tidal().split(" ");
+                    txtSwitch.setText(String.valueOf(Global.breath.getB_State()));
+                    if (Global.breath.getB_Tidal() != null) {
+                        String[] arrayTd = Global.breath.getB_Tidal().split(" ");
                         txtTidal.setText(arrayTd[0]);
                         txtFrequency.setText(arrayTd[1]);
                         //Log.e(TAG, Breath.getB_State() + "  " + arrayTd[0] + "  " + arrayTd[1] + "  " + Breath.getB_O2());
                     }
-                    txtO2.setText(String.valueOf(breath.getB_O2()));
+                    txtO2.setText(String.valueOf(Global.breath.getB_O2()));
 
-                    txtEtCo2.setText(String.valueOf(co2.getEtco2()));
+                    if(co2.getEtco2()!=0){
+                        txtEtCo2.setText(String.valueOf(co2.getEtco2()));
+                    }else{
+                        txtEtCo2.setText("--");
+                    }
                     //txtFico2.setText(String.valueOf(co2.getFico2()));
-                    txtResp.setText(String.valueOf(co2.getRr()));
+                    if(co2.getRr()!=0){
+                        txtResp.setText(String.valueOf(co2.getRr()));
+                    }else{
+                        txtResp.setText("--");
+                    }
 
                     //Log.e(TAG, co2.getEtco2() + "  " + co2.getFico2() + "  " + co2.getRr());
                     //</editor-fold>
@@ -274,6 +312,7 @@ public class MainActivity extends Activity {
                     break;
                 case 301://MCU
                     //<editor-fold desc="MCU电池状态">
+                    Log.e("McuData", "" + mcu.getAc_dc());
                     if (mcu.getAc_dc() == 1) {
                         imgBattery.setImageResource(R.mipmap.battery);
                     } else {
@@ -321,9 +360,23 @@ public class MainActivity extends Activity {
                 break;
             case R.id.img_voice:
                 Log.e(TAG, "onViewClicked: 静音");
+                if (Global.voice) {
+                    imgVoice.setImageResource(R.mipmap.sound_off);
+                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.voice_off);
+                } else {
+                    imgVoice.setImageResource(R.mipmap.sound_on);
+                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.voice_on);
+                }
+                Global.voice = !Global.voice;
                 break;
             case R.id.img_lock:
                 Log.e(TAG, "onViewClicked: 锁");
+                if (Global.lock) {
+                    imgLock.setImageResource(R.mipmap.unlock);
+                } else {
+                    imgLock.setImageResource(R.mipmap.lock);
+                }
+                Global.lock = !Global.lock;
                 break;
             case R.id.breath_set:
                 Log.e(TAG, "onViewClicked: Breath");
@@ -338,40 +391,43 @@ public class MainActivity extends Activity {
                 }
                 break;
             case R.id.layout_resp:
-                Log.e(TAG, "onViewClicked: resp");
+
                 intent = new Intent(MainActivity.this, DialogActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("title", "呼吸报警限设置");
+                bundle.putString("title", "呼吸");
+                bundle.putString("name", "Resp");
                 bundle.putString("limit_H", this.txtRespAlertH.getText().toString());
                 bundle.putString("limit_L", this.txtRespAlertL.getText().toString());
                 intent.putExtras(bundle);
                 startActivity(intent);
+                IntentFilter filter = new IntentFilter(DialogActivity.action);
+                registerReceiver(broadcastReceiver, filter);
                 break;
             case R.id.layout_etCo2:
-                Log.e(TAG, "onViewClicked: etCO2");
                 intent = new Intent(MainActivity.this, DialogActivity.class);
                 bundle = new Bundle();
-                bundle.putString("title", "CO2报警限设置");
+                bundle.putString("title", "CO2");
+                bundle.putString("name", "EtCO2");
                 bundle.putString("limit_H", this.txtEtCo2AlertH.getText().toString());
                 bundle.putString("limit_L", this.txtEtCo2AlertL.getText().toString());
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
             case R.id.layout_spo2:
-                Log.e(TAG, "onViewClicked: spo2");
                 intent = new Intent(MainActivity.this, DialogActivity.class);
                 bundle = new Bundle();
-                bundle.putString("title", "血氧报警限设置");
+                bundle.putString("title", "血氧");
+                bundle.putString("name", "SpO2");
                 bundle.putString("limit_H", this.txtSpo2AlertH.getText().toString());
                 bundle.putString("limit_L", this.txtSpo2AlertL.getText().toString());
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
             case R.id.layout_pulse:
-                Log.e(TAG, "onViewClicked: pulse");
                 intent = new Intent(MainActivity.this, DialogActivity.class);
                 bundle = new Bundle();
-                bundle.putString("title", "脉率报警限设置");
+                bundle.putString("title", "脉率");
+                bundle.putString("name", "Pulse");
                 bundle.putString("limit_H", this.txtPulseAlertH.getText().toString());
                 bundle.putString("limit_L", this.txtPulseAlertL.getText().toString());
                 intent.putExtras(bundle);
@@ -390,13 +446,13 @@ public class MainActivity extends Activity {
                 Thread.sleep(1000);
 
                 while (true) {
-                    Thread.sleep(10);
-                    breath.GetBreathInfo(Global.breath_Com);
+                    Thread.sleep(50);
+                    Global.breath.GetBreathInfo(Global.breath_Com);
                     BreathCo2.Parsing();
                     List<byte[]> co2s = BreathCo2.getCo2Data();
                     List<byte[]> breaths = BreathCo2.getBreathData();
                     if (breaths.size() > 0) {
-                        breath.Parsing(breaths);
+                        Global.breath.Parsing(breaths);
                     }
                     if (co2s.size() > 0) {
 
@@ -466,12 +522,11 @@ public class MainActivity extends Activity {
         @Override
         public void run() {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
                 while (true) {
-                    Thread.sleep(50);
+                    Thread.sleep(2000);
                     Global.mcu_Com.Write(mcuData);
                     mcu.Parsing(Global.mcu_Com);
-
                     mHandler.sendEmptyMessage(301);
                 }
             } catch (Exception ex) {
@@ -506,6 +561,17 @@ public class MainActivity extends Activity {
         AddAlarmInfo(txtSpo2, txtSpo2AlertH, txtSpo2AlertL, imgSpo2Alarm, Global.spo2_alarm, "血氧");
         //脉率报警
         AddAlarmInfo(txtPulse, txtPulseAlertH, txtPulseAlertL, imgPulseAlarm, Global.pulse_alarm, "脉率");
+
+        if (mSafeAlertMessage.size() > 0) {
+            txtAlarm.setText(mSafeAlertMessage.get(0));
+            mSafeAlertMessage.remove(0);
+            Global.isAlarm1 = true;
+        } else {
+            txtAlarm.setText("");
+            Global.isAlarm1 = false;
+        }
+
+        AlarmVoice();
     }
 
     /**
@@ -540,8 +606,72 @@ public class MainActivity extends Activity {
             } else {
                 img.setLevel(0);
             }
+        }else{
+            img.setLevel(0);
         }
     }
+
+    private void AlarmVoice() {
+        Log.e("tag",Global.isAlarm1+" "+Global.isAlarmH+" "+Global.isAlarmM+" "+Global.isAlarmOff);
+        if (Global.isAlarm1) {
+            if (!Global.isAlarmH) {
+                Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_h);
+                Global.isAlarmH = true;
+
+                Global.isAlarmM = false;
+                Global.isAlarmOff = false;
+            }
+        } else if (Global.isAlarm2) {
+            if (!Global.isAlarmM) {
+                Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_m);
+                Global.isAlarmM = true;
+
+                Global.isAlarmH = false;
+                Global.isAlarmOff = false;
+            }
+        } else {
+            if (!Global.isAlarmOff) {
+                Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_off);
+                Global.isAlarmOff = true;
+
+                Global.isAlarmH = false;
+                Global.isAlarmM = false;
+            }
+        }
+
+    }
+
+    //</editor-fold>
+
+    //<editor-fold desc="广播用于接收上下限设置">
+    //广播用于接收上下限设置
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // TODO Auto-generated method stub
+            String name = intent.getExtras().getString("name");
+            Log.e("TAG12",name);
+            switch(name){
+                case "Resp":
+                    txtRespAlertH.setText(intent.getExtras().getString("limitH"));
+                    txtRespAlertL.setText(intent.getExtras().getString("limitL"));
+                    break;
+                case "EtCO2":
+                    txtEtCo2AlertH.setText(intent.getExtras().getString("limitH"));
+                    txtEtCo2AlertL.setText(intent.getExtras().getString("limitL"));
+                    break;
+                case "SpO2":
+                    txtSpo2AlertH.setText(intent.getExtras().getString("limitH"));
+                    txtSpo2AlertL.setText(intent.getExtras().getString("limitL"));
+                    break;
+                case "Pulse":
+                    txtPulseAlertH.setText(intent.getExtras().getString("limitH"));
+                    txtPulseAlertL.setText(intent.getExtras().getString("limitL"));
+                    break;
+            }
+        }
+    };
     //</editor-fold>
 
 }

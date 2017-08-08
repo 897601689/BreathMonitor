@@ -469,6 +469,7 @@ public class Breath_Parsing {
     }
 
     public void GetBreathInfo(MySerialPort cmdPort){
+        SendCmd(cmdPort,bQMode,null);
         SendCmd(cmdPort,bQTidal,null);
         SendCmd(cmdPort,bQState,null);
         SendCmd(cmdPort,bQO2,null);

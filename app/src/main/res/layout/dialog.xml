@@ -50,7 +50,7 @@
                     android:textSize="25sp" />
 
                 <Spinner
-                    android:id="@+id/spinner1"
+                    android:id="@+id/spinner_mode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="69dp"
@@ -72,7 +72,7 @@
                     android:textSize="25sp" />
 
                 <Spinner
-                    android:id="@+id/spinner2"
+                    android:id="@+id/spinner_o2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="69dp"
@@ -102,7 +102,7 @@
                     android:textSize="25sp" />
 
                 <Spinner
-                    android:id="@+id/spinner3"
+                    android:id="@+id/spinner_hz"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="69dp"
@@ -124,7 +124,7 @@
                     android:textSize="25sp" />
 
                 <Spinner
-                    android:id="@+id/spinner4"
+                    android:id="@+id/spinner_tidal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="69dp"

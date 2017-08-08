@@ -12,12 +12,21 @@ import com.breathmonitor.bean.Breath;
  */
 
 public class MonitorApplication extends Application {
+    String TAG = "MonitorApplication";
     SharedPreferences sp;
 
     @Override
     public void onCreate() {
         super.onCreate();
         sp = getSharedPreferences(getClass().getName(), Context.MODE_PRIVATE);
+        if (getAppNum() == 0) {
+            setBreathShared(new Breath("控制", "200", "15", "21"));
+            setAlertShared("Resp", new Alert(true, 30, 8));
+            setAlertShared("EtCO2", new Alert(true, 40, 10));
+            setAlertShared("SpO2", new Alert(true, 100, 90));
+            setAlertShared("Pulse", new Alert(true, 120, 50));
+        }
+        setAppNum(getAppNum() + 1);//增加一次启动次数
     }
 
     public void setAlertShared(String name, Alert alert) {
@@ -29,7 +38,7 @@ public class MonitorApplication extends Application {
         editor.apply();//异步 不会返回是否操作成功
     }
 
-    public Alert getAlertSharedModel(String name) {
+    public Alert getAlertShared(String name) {
         boolean Switch = sp.getBoolean(name + "_Switch", true);
         int high = sp.getInt(name + "_HighLimit", 100);
         int low = sp.getInt(name + "_LowLimit", 30);
@@ -47,6 +56,7 @@ public class MonitorApplication extends Application {
     }
 
     public Breath getBreathShared() {
+
         String mode = sp.getString("breath_Mode", "控制");
         String tidal = sp.getString("breath_Tidal", "700");
         String hz = sp.getString("breath_Hz", "10");
@@ -54,5 +64,16 @@ public class MonitorApplication extends Application {
         return new Breath(mode, tidal, hz, o2);
     }
 
+
+    public void setAppNum(int num) {
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putInt("AppNum", num);
+        //editor.commit();
+        editor.apply();
+    }
+
+    public int getAppNum() {
+        return sp.getInt("AppNum", 0);
+    }
 
 }

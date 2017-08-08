@@ -32,12 +32,17 @@ public class Mcu_Parsing {
         return charge_State;
     }
 
-    private String bat_State=""; // 电池状态
-    private String bat_Level=""; // 电池电量
-    private int ac_dc=0;        // 适配器状态
-    private int charge_State=0; // 充电状态
+    private String bat_State = ""; // 电池状态
+    private String bat_Level = ""; // 电池电量
+    private int ac_dc = 0;        // 适配器状态
+    private int charge_State = 0; // 充电状态
 
-    byte[] mcuData = new byte[]{ (byte)0xff,0x32 ,0x01,(byte)0x80,0x00,0x00,0x00,0x00,0x00,0x00,0x00,(byte)0xee};
+    byte[] mcuData = new byte[]{(byte) 0xff, 0x32, 0x01, (byte) 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xee};
+    public static byte[] alarm_off = new byte[]{(byte) 0xff, 0x32, 0x01, (byte) 0x82, 0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xee};
+    public static byte[] alarm_h = new byte[]{(byte) 0xff, 0x32, 0x01, (byte) 0x82, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xee};
+    public static byte[] alarm_m = new byte[]{(byte) 0xff, 0x32, 0x01, (byte) 0x82, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xee};
+    public static byte[] voice_off = new byte[]{(byte) 0xff, 0x32, 0x01, (byte) 0x82, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xee};
+    public static byte[] voice_on = new byte[]{(byte) 0xff, 0x32, 0x01, (byte) 0x82, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xee};
 
     /**
      * 获取串口数据
@@ -48,8 +53,8 @@ public class Mcu_Parsing {
         try {
 
             buffer = com.Read();
+            ac_dc =0;
             if (buffer != null) {
-
                 list.clear();
                 //Log.e("McuData", "" + buffer.length);
                 for (byte aByte : buffer) {
@@ -82,7 +87,7 @@ public class Mcu_Parsing {
     private void Parsing_Mcu(byte[] data) {
         if (data[1] == 0x32 && data[2] == 0x01) {
 
-            bat_Level = String.valueOf((168- (int)data[3])/33 );//电池电量百分百
+            bat_Level = String.valueOf((168 - (int) data[3]) / 33);//电池电量百分百
 
             //<editor-fold desc="电池状态">
             switch (data[5]) {
