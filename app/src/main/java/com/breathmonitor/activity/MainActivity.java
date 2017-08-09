@@ -35,7 +35,6 @@ import com.breathmonitor.util.MonitorApplication;
 import com.breathmonitor.widgets.AlarmImageView;
 import com.breathmonitor.widgets.MySurfaceView;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -121,7 +120,7 @@ public class MainActivity extends Activity {
     TextView txtPulse;
     //</editor-fold>
 
-    String TAG = "MainActivity";
+    String TAG = "Main Activity";
 
     BreathCO2 BreathCo2 = new BreathCO2(Global.breath_Com);
     CO2_Parsing co2 = new CO2_Parsing();
@@ -204,8 +203,9 @@ public class MainActivity extends Activity {
         new Thread(new AlarmAndTime()).start();
         try {
             Global.mcu_Com.Write(breathOn);
+            Thread.sleep(10);
             Global.mcu_Com.Write(spo2On);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -279,15 +279,15 @@ public class MainActivity extends Activity {
                     }
                     txtO2.setText(String.valueOf(Global.breath.getB_O2()));
 
-                    if(co2.getEtco2()!=0){
+                    if (co2.getEtco2() != 0) {
                         txtEtCo2.setText(String.valueOf(co2.getEtco2()));
-                    }else{
+                    } else {
                         txtEtCo2.setText("--");
                     }
                     //txtFico2.setText(String.valueOf(co2.getFico2()));
-                    if(co2.getRr()!=0){
+                    if (co2.getRr() != 0) {
                         txtResp.setText(String.valueOf(co2.getRr()));
-                    }else{
+                    } else {
                         txtResp.setText("--");
                     }
 
@@ -606,37 +606,45 @@ public class MainActivity extends Activity {
             } else {
                 img.setLevel(0);
             }
-        }else{
+        } else {
             img.setLevel(0);
         }
     }
 
     private void AlarmVoice() {
-        Log.e("tag",Global.isAlarm1+" "+Global.isAlarmH+" "+Global.isAlarmM+" "+Global.isAlarmOff);
-        if (Global.isAlarm1) {
-            if (!Global.isAlarmH) {
-                Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_h);
-                Global.isAlarmH = true;
+        Log.e("tag", Global.isAlarm1 + " " + Global.isAlarmH + " " + Global.isAlarmM + " " + Global.isAlarmOff);
 
-                Global.isAlarmM = false;
-                Global.isAlarmOff = false;
-            }
-        } else if (Global.isAlarm2) {
-            if (!Global.isAlarmM) {
-                Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_m);
-                Global.isAlarmM = true;
+        try {
+            if (Global.isAlarm1) {
+                if (!Global.isAlarmH) {
+                    Thread.sleep(20);
+                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_h);
+                    Global.isAlarmH = true;
 
-                Global.isAlarmH = false;
-                Global.isAlarmOff = false;
-            }
-        } else {
-            if (!Global.isAlarmOff) {
-                Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_off);
-                Global.isAlarmOff = true;
+                    Global.isAlarmM = false;
+                    Global.isAlarmOff = false;
+                }
+            } else if (Global.isAlarm2) {
+                if (!Global.isAlarmM) {
+                    Thread.sleep(20);
+                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_m);
+                    Global.isAlarmM = true;
 
-                Global.isAlarmH = false;
-                Global.isAlarmM = false;
+                    Global.isAlarmH = false;
+                    Global.isAlarmOff = false;
+                }
+            } else {
+                if (!Global.isAlarmOff) {
+                    Thread.sleep(20);
+                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_off);
+                    Global.isAlarmOff = true;
+
+                    Global.isAlarmH = false;
+                    Global.isAlarmM = false;
+                }
             }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
     }
@@ -651,8 +659,8 @@ public class MainActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             // TODO Auto-generated method stub
             String name = intent.getExtras().getString("name");
-            Log.e("TAG12",name);
-            switch(name){
+            Log.e("TAG12", name);
+            switch (name) {
                 case "Resp":
                     txtRespAlertH.setText(intent.getExtras().getString("limitH"));
                     txtRespAlertL.setText(intent.getExtras().getString("limitL"));
