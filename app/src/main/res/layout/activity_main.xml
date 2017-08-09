@@ -54,7 +54,7 @@
             android:layout_gravity="center"
             android:layout_weight="0.25"
             android:scaleType="fitCenter"
-            android:src="@mipmap/battery20" />
+            android:src="@mipmap/battery0" />
 
         <ImageView
             android:id="@+id/img_lock"

@@ -46,10 +46,7 @@ public class SplashActivity extends Activity {
         //应用运行时，保持屏幕高亮，不锁屏
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         //隐藏虚拟按键，并且全屏
-        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
-            View v = this.getWindow().getDecorView();
-            v.setSystemUiVisibility(View.GONE);
-        } else if (Build.VERSION.SDK_INT >= 19) {
+        if (Build.VERSION.SDK_INT >= 19) {
             //for new api versions.
             View decorView = getWindow().getDecorView();
             int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION

@@ -18,7 +18,7 @@ public class SpO2_Parsing {
     private int spo2_value;    // 血氧值
     private int pulse_value;   // 脉率值
     private String state;      // 血氧状态
-    private String error;      // 错误状态
+    private String error="";      // 错误状态
     private int pi;            //灌注指数
 
     public String getError() {
@@ -66,7 +66,7 @@ public class SpO2_Parsing {
         try {
             bytes = port.Read();
             if (bytes != null) {
-
+                error = "";
                 for (byte aByte : bytes) {
                     list.add(aByte);
                 }
@@ -79,6 +79,7 @@ public class SpO2_Parsing {
                         i = -1;
 
                         signal_intensity = buffer[0] & 0xF; //信号强度
+
                         if ((buffer[0] >> 4 & 0x1) == 1) {
                             state = "搜索时间太长";
                         }

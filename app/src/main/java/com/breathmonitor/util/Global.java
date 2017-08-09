@@ -15,6 +15,7 @@ public class Global {
 
     public static Breath_Parsing breath = new Breath_Parsing(); //呼吸机解析对象
 
+
     public static boolean BreathIsOpen = false; //呼吸机是否在工作
     public static boolean resp_alarm = true;    //报警开关
     public static boolean etCo2_alarm = true;   //报警开关
@@ -32,4 +33,5 @@ public class Global {
     public static boolean isAlarmOff = false;   //是否已经关闭报警
 
     public static MonitorApplication mApp;
+
 }

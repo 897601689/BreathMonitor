@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.breathmonitor.R;
 import com.breathmonitor.bean.Alert;
 import com.breathmonitor.util.Global;
-import com.breathmonitor.widgets.MyDialog;
+import com.breathmonitor.widgets.ValueDialog;
 import com.breathmonitor.widgets.SwitchView;
 
 import butterknife.BindView;
@@ -26,7 +26,7 @@ import butterknife.OnClick;
  * Created by admin on 2017/8/7.
  */
 
-public class DialogActivity extends Activity {
+public class AlertActivity extends Activity {
     @BindView(R.id.dialog_txt)
     TextView dialogTxt;
     @BindView(R.id.switchView)
@@ -50,7 +50,7 @@ public class DialogActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hideSystemUIMenu();
-        setContentView(R.layout.acticity_dialog);
+        setContentView(R.layout.acticity_alert);
         ButterKnife.bind(this);
 
         init();
@@ -79,7 +79,6 @@ public class DialogActivity extends Activity {
         //有可能在执行完onPause或onStop后,系统资源紧张将Activity杀死,所以有必要在此保存持久数据
     }
 
-
     private void init() {
         //新页面接收数据
         Bundle bundle = this.getIntent().getExtras();
@@ -99,11 +98,11 @@ public class DialogActivity extends Activity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.txt_h:
-                MyDialog myDialog = new MyDialog(DialogActivity.this, Integer.parseInt(txtH.getText().toString()), txtH);
+                ValueDialog myDialog = new ValueDialog(AlertActivity.this, Integer.parseInt(txtH.getText().toString()), txtH);
                 myDialog.show();
                 break;
             case R.id.txt_l:
-                myDialog = new MyDialog(DialogActivity.this, Integer.parseInt(txtL.getText().toString()), txtL);
+                myDialog = new ValueDialog(AlertActivity.this, Integer.parseInt(txtL.getText().toString()), txtL);
                 myDialog.show();
                 break;
             case R.id.cancel_cancel_txt:
@@ -115,7 +114,7 @@ public class DialogActivity extends Activity {
                         Integer.valueOf(txtL.getText().toString())));
 
                 Intent intent = new Intent(action);
-                intent.putExtra("name",name);
+                intent.putExtra("name", name);
                 intent.putExtra("limitH", txtH.getText().toString());
                 intent.putExtra("limitL", txtL.getText().toString());
                 sendBroadcast(intent);
@@ -142,10 +141,10 @@ public class DialogActivity extends Activity {
             View decorView = getWindow().getDecorView();
             int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+
             decorView.setSystemUiVisibility(uiOptions);
+
         }
 
     }
-
-
 }

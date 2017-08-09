@@ -4,6 +4,7 @@
     android:id="@+id/cancel_layout"
     android:layout_width="890dp"
     android:layout_height="590dp"
+    android:fitsSystemWindows="true"
     android:layout_gravity="center"
     android:background="@mipmap/dialog">
 

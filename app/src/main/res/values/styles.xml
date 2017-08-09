@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- 呼吸模块文字样式 -->
     <style name="breath_txt">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
@@ -19,6 +20,7 @@
         <item name="android:ems">2</item>
     </style>
 
+    <!-- 数值文字样式 -->
     <style name="value_txt">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -29,6 +31,7 @@
         <item name="android:ems">2</item>
     </style>
 
+    <!-- 报警限文字样式 -->
     <style name="alert_txt">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -59,4 +62,11 @@
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+
+    <!-- spinner -->
+    <style name="spinner_style">
+        <item name="android:background">@drawable/spinner_selector</item>
+        <item name="android:paddingLeft">5dip</item>
+    </style>
+
 </resources>

@@ -5,7 +5,7 @@
     android:background="#000"
     android:gravity="center">
 
-    <!--<include layout="@layout/dialog" />-->
+    <!--<include layout="@layout/activity_breath" />-->
     <ImageView
         android:layout_width="900dp"
         android:layout_height="600dp"

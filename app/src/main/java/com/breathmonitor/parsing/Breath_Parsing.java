@@ -130,7 +130,7 @@ public class Breath_Parsing {
     /// 呼吸机氧气浓度
     private String b_O2="--";
     /// 呼吸机报警
-    private String b_Alarm;
+    private String b_Alarm="";
     /// 呼吸机气道压力
     private String b_Pmb;
 
@@ -325,10 +325,10 @@ public class Breath_Parsing {
                     b_O2 = "100";
                     break;
                 case (byte) 0xA0:
-                    b_Alarm = "脱落报警";
+                    b_Alarm = "呼吸器脱落报警";
                     break;
                 case (byte) 0xA1:
-                    b_Alarm = "阻塞报警";
+                    b_Alarm = "呼吸器阻塞报警";
                     break;
                 case (byte) 0xA2:
                     b_Alarm = "氧气压力低报警";
@@ -353,7 +353,7 @@ public class Breath_Parsing {
                     b_Tidal = "--";
                     b_Mode = "--";
                     b_O2 = "--";
-                    b_Alarm = null;
+                    b_Alarm = "";
 
                     break;
             }

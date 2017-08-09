@@ -131,8 +131,6 @@ public class MainActivity extends Activity {
     List<String> mSafeAlertMessage = new ArrayList<>();//生理参数报警
     List<String> mTechnologyMessage = new ArrayList<>();//技术报警
 
-    byte[] breathOn = new byte[]{(byte) 0xff, 0x32, 0x01, (byte) 0x81, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xee};
-    byte[] spo2On = new byte[]{(byte) 0xff, 0x32, 0x01, (byte) 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xee};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,6 +172,13 @@ public class MainActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(broadcastReceiver);
+        try {
+            Thread.sleep(50);
+            Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_off);
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -189,25 +194,26 @@ public class MainActivity extends Activity {
         spo2Curve.setmCurveType(1);
         spo2Curve.setAmplitude(0);
         spo2Curve.setMax(127);
-        try {
+        /*try {
             Global.mcu_Com.Open("/dev/ttyMT1", 9600);//电源板
             Global.breath_Com.Open("/dev/ttyMT2", 38400);//呼吸机
             Global.spo2_Com.Open("/dev/ttyMT3", 4800);//血氧
             Log.e(TAG, "串口打开成功！");
+
+            Thread.sleep(50);
+            Global.mcu_Com.Write(Mcu_Parsing.breathAndSpo2On);//血氧和呼吸机上电
         } catch (Exception ex) {
             Log.e(TAG, "串口打开失败！");
         }
+
         new Thread(new Spo2Thread()).start();
         new Thread(new BreathCO2Thread()).start();
         new Thread(new McuThread()).start();
         new Thread(new AlarmAndTime()).start();
-        try {
-            Global.mcu_Com.Write(breathOn);
-            Thread.sleep(10);
-            Global.mcu_Com.Write(spo2On);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+*/
+
+        IntentFilter filter = new IntentFilter(AlertActivity.action);
+        registerReceiver(broadcastReceiver, filter);
     }
 
     private void initInfo() {
@@ -240,7 +246,7 @@ public class MainActivity extends Activity {
 
     //<editor-fold desc="隐藏系统菜单">
 
-    private void hideSystemUIMenu() {
+    public void hideSystemUIMenu() {
         //实现无标题栏（但有系统自带的任务栏）
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -292,6 +298,11 @@ public class MainActivity extends Activity {
                     }
 
                     //Log.e(TAG, co2.getEtco2() + "  " + co2.getFico2() + "  " + co2.getRr());
+                    if (!"".equals(Global.breath.getB_Alarm())) {
+                        if (!mTechnologyMessage.contains(Global.breath.getB_Alarm()))
+                            mTechnologyMessage.add(Global.breath.getB_Alarm());
+                    }
+
                     //</editor-fold>
                     break;
                 case 201://血氧
@@ -308,11 +319,17 @@ public class MainActivity extends Activity {
                     }
                     progressBar.setProgress(spo2.getPi());
                     //Log.e(TAG,spo2.getSpo2_value()+" " +spo2.getPulse_value()+" "+spo2.getPi());
+
+                    if (!"".equals(spo2.getError())) {
+                        if (!mTechnologyMessage.contains(spo2.getError())) {
+                            mTechnologyMessage.add(spo2.getError());
+                        }
+                    }
                     //</editor-fold>
                     break;
                 case 301://MCU
                     //<editor-fold desc="MCU电池状态">
-                    Log.e("McuData", "" + mcu.getAc_dc());
+                    //Log.e("McuData", "" + mcu.getAc_dc());
                     if (mcu.getAc_dc() == 1) {
                         imgBattery.setImageResource(R.mipmap.battery);
                     } else {
@@ -357,19 +374,38 @@ public class MainActivity extends Activity {
         switch (view.getId()) {
             case R.id.txt_time:
                 Log.e(TAG, "onViewClicked: 时间设置");
+                try {
+                    Thread.sleep(50);
+                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_h);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 break;
             case R.id.img_voice:
                 Log.e(TAG, "onViewClicked: 静音");
-                if (Global.voice) {
-                    imgVoice.setImageResource(R.mipmap.sound_off);
-                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.voice_off);
-                } else {
-                    imgVoice.setImageResource(R.mipmap.sound_on);
-                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.voice_on);
+                try {
+                    if (Global.voice) {
+                        imgVoice.setImageResource(R.mipmap.sound_off);
+                        Thread.sleep(50);
+                        Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.voice_off);
+                    } else {
+                        imgVoice.setImageResource(R.mipmap.sound_on);
+                        Thread.sleep(50);
+                        Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.voice_on);
+                    }
+                    Global.voice = !Global.voice;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                Global.voice = !Global.voice;
                 break;
             case R.id.img_lock:
+                imgPulseAlarm.setLevel(1);
+                try {
+                    Thread.sleep(50);
+                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_off);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 Log.e(TAG, "onViewClicked: 锁");
                 if (Global.lock) {
                     imgLock.setImageResource(R.mipmap.unlock);
@@ -392,7 +428,7 @@ public class MainActivity extends Activity {
                 break;
             case R.id.layout_resp:
 
-                intent = new Intent(MainActivity.this, DialogActivity.class);
+                intent = new Intent(MainActivity.this, AlertActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("title", "呼吸");
                 bundle.putString("name", "Resp");
@@ -400,11 +436,9 @@ public class MainActivity extends Activity {
                 bundle.putString("limit_L", this.txtRespAlertL.getText().toString());
                 intent.putExtras(bundle);
                 startActivity(intent);
-                IntentFilter filter = new IntentFilter(DialogActivity.action);
-                registerReceiver(broadcastReceiver, filter);
                 break;
             case R.id.layout_etCo2:
-                intent = new Intent(MainActivity.this, DialogActivity.class);
+                intent = new Intent(MainActivity.this, AlertActivity.class);
                 bundle = new Bundle();
                 bundle.putString("title", "CO2");
                 bundle.putString("name", "EtCO2");
@@ -414,7 +448,7 @@ public class MainActivity extends Activity {
                 startActivity(intent);
                 break;
             case R.id.layout_spo2:
-                intent = new Intent(MainActivity.this, DialogActivity.class);
+                intent = new Intent(MainActivity.this, AlertActivity.class);
                 bundle = new Bundle();
                 bundle.putString("title", "血氧");
                 bundle.putString("name", "SpO2");
@@ -424,7 +458,7 @@ public class MainActivity extends Activity {
                 startActivity(intent);
                 break;
             case R.id.layout_pulse:
-                intent = new Intent(MainActivity.this, DialogActivity.class);
+                intent = new Intent(MainActivity.this, AlertActivity.class);
                 bundle = new Bundle();
                 bundle.putString("title", "脉率");
                 bundle.putString("name", "Pulse");
@@ -514,8 +548,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    byte[] mcuData = new byte[]{(byte) 0xff, 0x32, 0x01, (byte) 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, (byte) 0xee};
-
     //单片机解析线程(电池状态)
     private class McuThread implements Runnable {
 
@@ -525,7 +557,7 @@ public class MainActivity extends Activity {
                 Thread.sleep(2000);
                 while (true) {
                     Thread.sleep(2000);
-                    Global.mcu_Com.Write(mcuData);
+                    Global.mcu_Com.Write(Mcu_Parsing.mcuData);
                     mcu.Parsing(Global.mcu_Com);
                     mHandler.sendEmptyMessage(301);
                 }
@@ -570,6 +602,15 @@ public class MainActivity extends Activity {
             txtAlarm.setText("");
             Global.isAlarm1 = false;
         }
+        if (mTechnologyMessage.size() > 0) {
+            txtAlarm.setText(mTechnologyMessage.get(0));
+            mTechnologyMessage.remove(0);
+            Global.isAlarm2 = true;
+        } else {
+            txtAlarm.setText("");
+            Global.isAlarm2 = false;
+        }
+
 
         AlarmVoice();
     }
@@ -612,12 +653,16 @@ public class MainActivity extends Activity {
     }
 
     private void AlarmVoice() {
-        Log.e("tag", Global.isAlarm1 + " " + Global.isAlarmH + " " + Global.isAlarmM + " " + Global.isAlarmOff);
+        //Log.e("tag", Global.isAlarm1 + " " +Global.isAlarm2 + " " + Global.isAlarmH + " " + Global.isAlarmM + " " + Global.isAlarmOff);
 
         try {
             if (Global.isAlarm1) {
                 if (!Global.isAlarmH) {
-                    Thread.sleep(20);
+                    Thread.sleep(50);
+                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_h);
+                    Thread.sleep(50);
+                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_h);
+                    Thread.sleep(50);
                     Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_h);
                     Global.isAlarmH = true;
 
@@ -626,7 +671,11 @@ public class MainActivity extends Activity {
                 }
             } else if (Global.isAlarm2) {
                 if (!Global.isAlarmM) {
-                    Thread.sleep(20);
+                    Thread.sleep(50);
+                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_m);
+                    Thread.sleep(50);
+                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_m);
+                    Thread.sleep(50);
                     Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_m);
                     Global.isAlarmM = true;
 
@@ -635,7 +684,11 @@ public class MainActivity extends Activity {
                 }
             } else {
                 if (!Global.isAlarmOff) {
-                    Thread.sleep(20);
+                    Thread.sleep(50);
+                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_off);
+                    Thread.sleep(50);
+                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_off);
+                    Thread.sleep(50);
                     Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_off);
                     Global.isAlarmOff = true;
 

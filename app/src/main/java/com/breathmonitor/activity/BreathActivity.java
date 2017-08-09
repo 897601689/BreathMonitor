@@ -67,7 +67,7 @@ public class BreathActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hideSystemUIMenu();
-        setContentView(R.layout.dialog);
+        setContentView(R.layout.activity_breath);
         ButterKnife.bind(this);
 
         init();
@@ -96,29 +96,31 @@ public class BreathActivity extends Activity {
                 // Log.i("LB",mHzItems[position]);
                 if (mHzItems[position].equals("8")) {
                     array = mTd8Items;
-                    adapter = new ArrayAdapter<>(BreathActivity.this, android.R.layout.simple_spinner_item, mTd8Items);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    adapter = new ArrayAdapter<>(BreathActivity.this, R.layout.simple_spinner_item, mTd8Items);
+                    adapter.setDropDownViewResource(R.layout.my_drop_down_item);
                     //绑定 Adapter到控件
                     spinnerTidal.setAdapter(adapter);
                 }
                 if (mHzItems[position].equals("12")) {
                     array = mTd12Items;
-                    adapter = new ArrayAdapter<>(BreathActivity.this, android.R.layout.simple_spinner_item, mTd12Items);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    adapter = new ArrayAdapter<>(BreathActivity.this, R.layout.simple_spinner_item, mTd12Items);
+                    adapter.setDropDownViewResource(R.layout.my_drop_down_item);
                     //绑定 Adapter到控件
                     spinnerTidal.setAdapter(adapter);
                 }
                 if (mHzItems[position].equals("10")) {
                     array = mTd10Items;
-                    adapter = new ArrayAdapter<>(BreathActivity.this, android.R.layout.simple_spinner_item, mTd10Items);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    adapter = new ArrayAdapter<>(BreathActivity.this, R.layout.simple_spinner_item, mTd10Items);
+                    adapter.setDropDownViewResource(R.layout.my_drop_down_item);
                     //绑定 Adapter到控件
                     spinnerTidal.setAdapter(adapter);
                 }
                 if (mHzItems[position].equals("15")) {
                     array = mTd15Items;
-                    adapter = new ArrayAdapter<>(BreathActivity.this, android.R.layout.simple_spinner_item, mTd15Items);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    adapter = new ArrayAdapter<>(BreathActivity.this, R.layout.simple_spinner_item, mTd15Items);
+                    adapter.setDropDownViewResource(R.layout.my_drop_down_item);
+                    //adapter = new ArrayAdapter<>(BreathActivity.this, android.R.layout.simple_spinner_item, mTd15Items);
+                    //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     //绑定 Adapter到控件
                     spinnerTidal.setAdapter(adapter);
                 }
