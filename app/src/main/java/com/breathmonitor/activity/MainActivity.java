@@ -38,6 +38,7 @@ import com.breathmonitor.widgets.MySurfaceView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -131,6 +132,8 @@ public class MainActivity extends Activity {
     List<String> mSafeAlertMessage = new ArrayList<>();//生理参数报警
     List<String> mTechnologyMessage = new ArrayList<>();//技术报警
 
+    HashMap AlertMessage = new HashMap();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,7 +197,7 @@ public class MainActivity extends Activity {
         spo2Curve.setmCurveType(1);
         spo2Curve.setAmplitude(0);
         spo2Curve.setMax(127);
-        /*try {
+        try {
             Global.mcu_Com.Open("/dev/ttyMT1", 9600);//电源板
             Global.breath_Com.Open("/dev/ttyMT2", 38400);//呼吸机
             Global.spo2_Com.Open("/dev/ttyMT3", 4800);//血氧
@@ -210,7 +213,7 @@ public class MainActivity extends Activity {
         new Thread(new BreathCO2Thread()).start();
         new Thread(new McuThread()).start();
         new Thread(new AlarmAndTime()).start();
-*/
+
 
         IntentFilter filter = new IntentFilter(AlertActivity.action);
         registerReceiver(broadcastReceiver, filter);
@@ -301,7 +304,14 @@ public class MainActivity extends Activity {
                     if (!"".equals(Global.breath.getB_Alarm())) {
                         if (!mTechnologyMessage.contains(Global.breath.getB_Alarm()))
                             mTechnologyMessage.add(Global.breath.getB_Alarm());
+                        if (!AlertMessage.containsKey(Global.breath.getB_Alarm())) {
+                            AlertMessage.put(Global.breath.getB_Alarm(), 0);
+                        } else {
+
+                        }
+
                     }
+
 
                     //</editor-fold>
                     break;
@@ -374,23 +384,18 @@ public class MainActivity extends Activity {
         switch (view.getId()) {
             case R.id.txt_time:
                 Log.e(TAG, "onViewClicked: 时间设置");
-                try {
-                    Thread.sleep(50);
-                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_h);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
                 break;
             case R.id.img_voice:
                 Log.e(TAG, "onViewClicked: 静音");
                 try {
                     if (Global.voice) {
                         imgVoice.setImageResource(R.mipmap.sound_off);
-                        Thread.sleep(50);
+                        Thread.sleep(100);
                         Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.voice_off);
                     } else {
                         imgVoice.setImageResource(R.mipmap.sound_on);
-                        Thread.sleep(50);
+                        Thread.sleep(100);
                         Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.voice_on);
                     }
                     Global.voice = !Global.voice;
@@ -400,12 +405,12 @@ public class MainActivity extends Activity {
                 break;
             case R.id.img_lock:
                 imgPulseAlarm.setLevel(1);
-                try {
-                    Thread.sleep(50);
-                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_off);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Thread.sleep(50);
+//                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_off);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
                 Log.e(TAG, "onViewClicked: 锁");
                 if (Global.lock) {
                     imgLock.setImageResource(R.mipmap.unlock);
@@ -583,6 +588,9 @@ public class MainActivity extends Activity {
         }
     }
 
+
+    boolean isOneOrTwo = false;
+
     //<editor-fold desc="报警判断">
     private void Alarm() {
         //呼吸率报警
@@ -594,22 +602,28 @@ public class MainActivity extends Activity {
         //脉率报警
         AddAlarmInfo(txtPulse, txtPulseAlertH, txtPulseAlertL, imgPulseAlarm, Global.pulse_alarm, "脉率");
 
-        if (mSafeAlertMessage.size() > 0) {
-            txtAlarm.setText(mSafeAlertMessage.get(0));
-            mSafeAlertMessage.remove(0);
-            Global.isAlarm1 = true;
+        if (isOneOrTwo) {
+            if (mSafeAlertMessage.size() > 0) {
+                txtAlarm.setText(mSafeAlertMessage.get(0));
+                //Log.e("生理",mSafeAlertMessage.get(0));
+                mSafeAlertMessage.remove(0);
+                Global.isAlarm1 = true;
+            } else {
+                txtAlarm.setText("");
+                Global.isAlarm1 = false;
+            }
         } else {
-            txtAlarm.setText("");
-            Global.isAlarm1 = false;
+            if (mTechnologyMessage.size() > 0) {
+                txtAlarm.setText(mTechnologyMessage.get(0));
+                //Log.e("技术",mTechnologyMessage.get(0));
+                mTechnologyMessage.remove(0);
+                Global.isAlarm2 = true;
+            } else {
+                txtAlarm.setText("");
+                Global.isAlarm2 = false;
+            }
         }
-        if (mTechnologyMessage.size() > 0) {
-            txtAlarm.setText(mTechnologyMessage.get(0));
-            mTechnologyMessage.remove(0);
-            Global.isAlarm2 = true;
-        } else {
-            txtAlarm.setText("");
-            Global.isAlarm2 = false;
-        }
+        isOneOrTwo = !isOneOrTwo;
 
 
         AlarmVoice();

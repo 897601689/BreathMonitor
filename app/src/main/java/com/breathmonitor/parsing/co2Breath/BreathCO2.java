@@ -28,7 +28,7 @@ public class BreathCO2 {
         return mCo2Datas;
     }
 
-    List<TypeConfig> mFindTypes = new ArrayList<TypeConfig>();
+    List<TypeConfig> mFindTypes = new ArrayList<>();
 
 
     public BreathCO2(final MySerialPort mSerialPort) {

@@ -15,8 +15,9 @@ import android.widget.TextView;
 import com.breathmonitor.R;
 import com.breathmonitor.bean.Alert;
 import com.breathmonitor.util.Global;
-import com.breathmonitor.widgets.ValueDialog;
+import com.breathmonitor.widgets.MyAlertDialog;
 import com.breathmonitor.widgets.SwitchView;
+import com.breathmonitor.widgets.ValueDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -109,16 +110,28 @@ public class AlertActivity extends Activity {
                 finish();
                 break;
             case R.id.cancel_sure_txt:
-                Global.mApp.setAlertShared(name, new Alert(switchView.isOpened(),
-                        Integer.parseInt(txtH.getText().toString()),
-                        Integer.valueOf(txtL.getText().toString())));
 
-                Intent intent = new Intent(action);
-                intent.putExtra("name", name);
-                intent.putExtra("limitH", txtH.getText().toString());
-                intent.putExtra("limitL", txtL.getText().toString());
-                sendBroadcast(intent);
-                finish();
+                if (Integer.parseInt(txtH.getText().toString()) > Integer.valueOf(txtL.getText().toString())) {
+                    Global.mApp.setAlertShared(name, new Alert(switchView.isOpened(),
+                            Integer.parseInt(txtH.getText().toString()),
+                            Integer.valueOf(txtL.getText().toString())));
+
+                    Intent intent = new Intent(action);
+                    intent.putExtra("name", name);
+                    intent.putExtra("limitH", txtH.getText().toString());
+                    intent.putExtra("limitL", txtL.getText().toString());
+                    sendBroadcast(intent);
+                    finish();
+                } else {
+                    final MyAlertDialog builder = new MyAlertDialog(AlertActivity.this);
+                    builder.setMessage("下限值必须大于上限值！");
+                    builder.setPositiveButton("确   定", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            builder.dismiss();
+                        }
+                    });
+                }
                 break;
         }
     }

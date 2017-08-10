@@ -36,7 +36,7 @@ public class ValueDialog extends Dialog {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         //设置对话框显示哪个布局文件
-        setContentView(R.layout.dialog2);
+        setContentView(R.layout.view_dialog);
         //对话框也可以通过资源id找到布局文件中的组件，从而设置点击侦听
         final WheelPicker wheelPicker = (WheelPicker) findViewById(R.id.wheelView1);
         TextView sure = (TextView) findViewById(R.id.cancel_sure_txt);

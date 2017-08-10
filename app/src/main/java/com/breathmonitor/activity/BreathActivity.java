@@ -117,10 +117,10 @@ public class BreathActivity extends Activity {
                 }
                 if (mHzItems[position].equals("15")) {
                     array = mTd15Items;
-                    adapter = new ArrayAdapter<>(BreathActivity.this, R.layout.simple_spinner_item, mTd15Items);
-                    adapter.setDropDownViewResource(R.layout.my_drop_down_item);
-                    //adapter = new ArrayAdapter<>(BreathActivity.this, android.R.layout.simple_spinner_item, mTd15Items);
-                    //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    //adapter = new ArrayAdapter<>(BreathActivity.this, R.layout.simple_spinner_item, mTd15Items);
+                    //adapter.setDropDownViewResource(R.layout.my_drop_down_item);
+                    adapter = new ArrayAdapter<>(BreathActivity.this, android.R.layout.simple_spinner_item, mTd15Items);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     //绑定 Adapter到控件
                     spinnerTidal.setAdapter(adapter);
                 }
