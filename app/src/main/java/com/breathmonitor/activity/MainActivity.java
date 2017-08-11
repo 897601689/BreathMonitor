@@ -365,7 +365,6 @@ public class MainActivity extends Activity {
                     txtTime.setText(format.format(new Date()));
 
                     Alarm();
-
                     if (Global.Mute) {
                         if (Global.pause_time == Global.alarm_pause_time) {
                             Mute();
