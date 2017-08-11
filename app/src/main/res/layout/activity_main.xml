@@ -1,449 +1,464 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.breathmonitor.activity.MainActivity">
 
-    <!--报警 时间 静音 电量 锁定-->
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="1280dp"
-        android:layout_height="50dp"
-        android:background="@mipmap/bg_top1"
-        android:gravity="center">
 
-        <TextView
-            android:id="@+id/txt_alarm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="血氧指夹空"
-            android:ems="5"
-            android:textColor="@color/white"
-            android:textSize="40sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txt_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:gravity="center"
-            android:text="2017-07-24 11:29:30"
-            android:textColor="@color/white"
-            android:textSize="40sp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/img_voice"
-            android:layout_width="50dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:gravity="right"
-            android:layout_weight="0.25"
-            android:scaleType="fitCenter"
-            android:src="@mipmap/sound_on" />
-
-        <ImageView
-            android:id="@+id/img_battery"
-            android:layout_width="wrap_content"
-            android:layout_height="80dp"
-            android:layout_gravity="center"
-            android:layout_weight="0.25"
-            android:scaleType="fitCenter"
-            android:src="@mipmap/battery0" />
-
-        <ImageView
-            android:id="@+id/img_lock"
-            android:layout_width="30dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:layout_weight="0.2"
-            android:scaleType="fitCenter"
-            android:src="@mipmap/unlock" />
-
-    </LinearLayout>
-
-    <!-- 呼吸标题 -->
-    <LinearLayout
-        android:layout_width="1280dp"
-        android:layout_height="40dp"
-        android:background="@mipmap/bg_top2">
-
-        <Button
-            android:id="@+id/breath_set"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:background="@color/transparent"/>
-    </LinearLayout>
-
-    <!-- 呼吸模块 -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <!-- 呼吸机起停 -->
-        <RelativeLayout
-            android:layout_width="320dp"
-            android:layout_height="265dp"
-            android:background="@mipmap/breath_left"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txt_switch"
-                style="@style/breath_txt"
-                android:text="OFF"
-                android:layout_weight="0"
-                tools:text="OFF" />
-
-            <TextView
-                android:id="@+id/txt_mode"
-                style="@style/breath_txt"
-                android:layout_height="wrap_content"
-                android:text="控制"
-                android:layout_alignEnd="@+id/txt_switch"
-                android:layout_alignBottom="@+id/txt_switch"
-                android:textSize="40sp"
-                tools:text="控制" />
-        </RelativeLayout>
-        <!-- 潮气量 -->
-        <LinearLayout
-            android:layout_width="320dp"
-            android:layout_height="265dp"
-            android:background="@mipmap/breath_center"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txt_tidal"
-                style="@style/breath_txt"
-                android:text="--"
-                tools:text="700" />
-
-        </LinearLayout>
-        <!-- 通气频率 -->
-        <LinearLayout
-            android:layout_width="320dp"
-            android:layout_height="265dp"
-            android:background="@mipmap/breath_center"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txt_frequency"
-                style="@style/breath_txt"
-                android:text="--"
-                tools:text="8" />
-
-        </LinearLayout>
-        <!-- 氧气浓度 -->
-        <LinearLayout
-            android:layout_width="320dp"
-            android:layout_height="265dp"
-            android:background="@mipmap/breath_right"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txt_o2"
-                style="@style/breath_txt"
-                android:text="--"
-                tools:text="21" />
-
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <!-- CO2 -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <!-- 呼吸率 -->
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <!--报警 时间 静音 电量 锁定-->
         <LinearLayout
-            android:layout_width="320dp"
-            android:layout_height="223dp"
-            android:background="@mipmap/resp"
-            android:orientation="vertical">
+            android:id="@+id/linearLayout"
+            android:layout_width="1280dp"
+            android:layout_height="50dp"
+            android:background="@mipmap/bg_top1"
+            android:gravity="center">
 
+            <TextView
+                android:id="@+id/txt_alarm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="5"
+                android:gravity="center"
+                android:text="血氧指夹空"
+                android:textColor="@color/white"
+                android:textSize="40sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:text="2017-07-24 11:29:30"
+                android:textColor="@color/white"
+                android:textSize="40sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/img_voice"
+                android:layout_width="50dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.25"
+                android:gravity="right"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/sound_on" />
+
+            <ImageView
+                android:id="@+id/img_battery"
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.5"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/battery0" />
+
+            <ImageView
+                android:id="@+id/img_lock"
+                android:layout_width="30dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.5"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/unlock" />
+
+        </LinearLayout>
+
+        <!-- 呼吸标题 -->
+        <LinearLayout
+            android:layout_width="1280dp"
+            android:layout_height="40dp"
+            android:background="@mipmap/bg_top2">
+
+            <Button
+                android:id="@+id/breath_set"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:background="@color/transparent" />
+        </LinearLayout>
+
+        <!-- 呼吸模块 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <!-- 呼吸机起停 -->
+            <RelativeLayout
+                android:layout_width="320dp"
+                android:layout_height="265dp"
+                android:background="@mipmap/breath_left"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_switch"
+                    style="@style/breath_txt"
+                    android:layout_weight="0"
+                    android:text="OFF"
+                    tools:text="OFF" />
+
+                <TextView
+                    android:id="@+id/txt_mode"
+                    style="@style/breath_txt"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/txt_switch"
+                    android:layout_alignEnd="@+id/txt_switch"
+                    android:text="控制"
+                    android:textSize="40sp"
+                    tools:text="控制" />
+            </RelativeLayout>
+            <!-- 潮气量 -->
             <LinearLayout
-                android:id="@+id/layout_resp"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:gravity="center|right">
+                android:layout_width="320dp"
+                android:layout_height="265dp"
+                android:background="@mipmap/breath_center"
+                android:gravity="center"
+                android:orientation="vertical">
 
-                <!-- app:srcCompat="@mipmap/alarm_red"  矢量图使用-->
-                <com.breathmonitor.widgets.AlarmImageView
-                    android:id="@+id/img_resp_alarm"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginRight="50dp"
-                    android:background="@mipmap/alarm_gray" />
+                <TextView
+                    android:id="@+id/txt_tidal"
+                    style="@style/breath_txt"
+                    android:text="--"
+                    tools:text="700" />
+
+            </LinearLayout>
+            <!-- 通气频率 -->
+            <LinearLayout
+                android:layout_width="320dp"
+                android:layout_height="265dp"
+                android:background="@mipmap/breath_center"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_frequency"
+                    style="@style/breath_txt"
+                    android:text="--"
+                    tools:text="8" />
+
+            </LinearLayout>
+            <!-- 氧气浓度 -->
+            <LinearLayout
+                android:layout_width="320dp"
+                android:layout_height="265dp"
+                android:background="@mipmap/breath_right"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_o2"
+                    style="@style/breath_txt"
+                    android:text="--"
+                    tools:text="21" />
+
+
             </LinearLayout>
 
+        </LinearLayout>
+
+        <!-- CO2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- 呼吸率 -->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:layout_width="320dp"
+                android:layout_height="223dp"
+                android:background="@mipmap/resp"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:id="@+id/layout_resp"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:gravity="center|right">
+
+                    <!-- app:srcCompat="@mipmap/alarm_red"  矢量图使用-->
+                    <com.breathmonitor.widgets.AlarmImageView
+                        android:id="@+id/img_resp_alarm"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginRight="50dp"
+                        android:background="@mipmap/alarm_gray" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txt_resp_alert_h"
+                            style="@style/alert_txt"
+                            android:text="30"
+                            tools:text="30" />
+
+                        <TextView
+                            android:id="@+id/txt_resp_alert_l"
+                            style="@style/alert_txt"
+                            android:text="8"
+                            tools:text="8" />
+                    </LinearLayout>
 
                     <TextView
-                        android:id="@+id/txt_resp_alert_h"
-                        style="@style/alert_txt"
-                        android:text="30"
+                        android:id="@+id/txt_resp"
+                        style="@style/value_txt"
+                        android:text="--"
+                        tools:text="15" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <!-- 呼末CO2 -->
+            <LinearLayout
+                android:layout_width="320dp"
+                android:layout_height="223dp"
+                android:background="@mipmap/etco2"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/layout_etCo2"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:gravity="center|right">
+
+                    <com.breathmonitor.widgets.AlarmImageView
+                        android:id="@+id/img_etCo2_alarm"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginRight="50dp"
+                        android:src="@mipmap/alarm_gray" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txt_etCo2_alert_h"
+                            style="@style/alert_txt"
+                            android:text="40"
+                            tools:text="40" />
+
+                        <TextView
+                            android:id="@+id/txt_etCo2_alert_l"
+                            style="@style/alert_txt"
+                            android:text="10"
+                            tools:text="10" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txt_etCo2"
+                        style="@style/value_txt"
+                        android:text="--"
                         tools:text="30" />
 
-                    <TextView
-                        android:id="@+id/txt_resp_alert_l"
-                        style="@style/alert_txt"
-                        android:text="8"
-                        tools:text="8" />
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/txt_resp"
-                    style="@style/value_txt"
-                    android:text="--"
-                    tools:text="15" />
 
             </LinearLayout>
 
-
-        </LinearLayout>
-
-        <!-- 呼末CO2 -->
-        <LinearLayout
-            android:layout_width="320dp"
-            android:layout_height="223dp"
-            android:background="@mipmap/etco2"
-            android:orientation="vertical">
-
+            <!-- CO2曲线 -->
             <LinearLayout
-                android:id="@+id/layout_etCo2"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:gravity="center|right">
-
-                <com.breathmonitor.widgets.AlarmImageView
-                    android:id="@+id/img_etCo2_alarm"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginRight="50dp"
-                    android:src="@mipmap/alarm_gray" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
+                android:layout_width="640dp"
+                android:layout_height="223dp"
+                android:background="@mipmap/co2_curve"
                 android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/txt_etCo2_alert_h"
-                        style="@style/alert_txt"
-                        android:text="40"
-                        tools:text="40" />
-
-                    <TextView
-                        android:id="@+id/txt_etCo2_alert_l"
-                        style="@style/alert_txt"
-                        android:text="10"
-                        tools:text="10" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/txt_etCo2"
-                    style="@style/value_txt"
-                    android:text="--"
-                    tools:text="30" />
-
+                <com.breathmonitor.widgets.MySurfaceView
+                    android:id="@+id/co2Curve"
+                    android:layout_width="640dp"
+                    android:layout_height="223dp" />
             </LinearLayout>
-
 
         </LinearLayout>
 
-        <!-- CO2曲线 -->
+        <!-- SpO2 -->
         <LinearLayout
-            android:layout_width="640dp"
-            android:layout_height="223dp"
-            android:background="@mipmap/co2_curve"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <com.breathmonitor.widgets.MySurfaceView
-                android:id="@+id/co2Curve"
+            <!-- SpO2-->
+            <LinearLayout
+                android:layout_width="320dp"
+                android:layout_height="223dp"
+                android:background="@mipmap/spo2"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/layout_spo2"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:gravity="center|right">
+
+
+                    <com.breathmonitor.widgets.AlarmImageView
+                        android:id="@+id/img_spo2_alarm"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginRight="50dp"
+                        android:src="@mipmap/alarm_gray" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txt_spo2_alert_h"
+                            style="@style/alert_txt"
+                            android:text="100"
+                            tools:text="100" />
+
+                        <TextView
+                            android:id="@+id/txt_spo2_alert_l"
+                            style="@style/alert_txt"
+                            android:text="90"
+                            tools:text="90" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txt_spo2"
+                        style="@style/value_txt"
+                        android:layout_weight="1"
+                        android:text="--"
+                        tools:text="98" />
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        android:layout_width="24dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="bottom"
+                        android:layout_marginBottom="25dp"
+                        android:layout_marginRight="15dp"
+                        android:indeterminateOnly="false"
+                        android:max="15"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/progress_vertical_shape" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <!-- Pulse -->
+            <LinearLayout
+                android:layout_width="320dp"
+                android:layout_height="223dp"
+                android:background="@mipmap/pulse"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/layout_pulse"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:gravity="center|right">
+
+                    <com.breathmonitor.widgets.AlarmImageView
+                        android:id="@+id/img_pulse_alarm"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginRight="50dp"
+                        android:src="@mipmap/alarm_gray" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txt_pulse_alert_h"
+                            style="@style/alert_txt"
+                            android:text="120"
+                            tools:text="120" />
+
+                        <TextView
+                            android:id="@+id/txt_pulse_alert_l"
+                            style="@style/alert_txt"
+                            android:text="50"
+                            tools:text="50" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txt_pulse"
+                        style="@style/value_txt"
+                        android:text="--"
+                        tools:text="80" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <!-- 血氧曲线 -->
+            <LinearLayout
                 android:layout_width="640dp"
-                android:layout_height="223dp" />
+                android:layout_height="223dp"
+                android:background="@mipmap/pulse_curve"
+                android:orientation="horizontal">
+
+                <com.breathmonitor.widgets.MySurfaceView
+                    android:id="@+id/spo2Curve"
+                    android:layout_width="640dp"
+                    android:layout_height="223dp" />
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
 
-    <!-- SpO2 -->
-    <LinearLayout
+    <Button
+        android:id="@+id/txt_lock"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="1190dp"
+        android:layout_marginTop="50dp"
+        android:background="#58000000"
+        android:gravity="center"
+        android:visibility="gone"/>
 
-        <!-- SpO2-->
-        <LinearLayout
-            android:layout_width="320dp"
-            android:layout_height="223dp"
-            android:background="@mipmap/spo2"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/layout_spo2"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:gravity="center|right">
-
-
-                <com.breathmonitor.widgets.AlarmImageView
-                    android:id="@+id/img_spo2_alarm"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginRight="50dp"
-                    android:src="@mipmap/alarm_gray" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/txt_spo2_alert_h"
-                        style="@style/alert_txt"
-                        android:text="100"
-                        tools:text="100" />
-
-                    <TextView
-                        android:id="@+id/txt_spo2_alert_l"
-                        style="@style/alert_txt"
-                        android:text="90"
-                        tools:text="90" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/txt_spo2"
-                    style="@style/value_txt"
-                    android:layout_weight="1"
-                    android:text="--"
-                    tools:text="98" />
-
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    android:layout_width="24dp"
-                    android:layout_height="120dp"
-                    android:layout_gravity="bottom"
-                    android:layout_marginBottom="25dp"
-                    android:layout_marginRight="15dp"
-                    android:indeterminateOnly="false"
-                    android:max="15"
-                    android:progress="0"
-                    android:progressDrawable="@drawable/progress_vertical_shape" />
-
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-        <!-- Pulse -->
-        <LinearLayout
-            android:layout_width="320dp"
-            android:layout_height="223dp"
-            android:background="@mipmap/pulse"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/layout_pulse"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:gravity="center|right">
-
-                <com.breathmonitor.widgets.AlarmImageView
-                    android:id="@+id/img_pulse_alarm"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginRight="50dp"
-                    android:src="@mipmap/alarm_gray" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/txt_pulse_alert_h"
-                        style="@style/alert_txt"
-                        android:text="120"
-                        tools:text="120" />
-
-                    <TextView
-                        android:id="@+id/txt_pulse_alert_l"
-                        style="@style/alert_txt"
-                        android:text="50"
-                        tools:text="50" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/txt_pulse"
-                    style="@style/value_txt"
-                    android:text="--"
-                    tools:text="80" />
-            </LinearLayout>
-
-
-        </LinearLayout>
-
-        <!-- 血氧曲线 -->
-        <LinearLayout
-            android:layout_width="640dp"
-            android:layout_height="223dp"
-            android:background="@mipmap/pulse_curve"
-            android:orientation="horizontal">
-
-            <com.breathmonitor.widgets.MySurfaceView
-                android:id="@+id/spo2Curve"
-                android:layout_width="640dp"
-                android:layout_height="223dp" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

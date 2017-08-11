@@ -57,7 +57,7 @@
                     style="@style/spinner_style"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:entries="@+array/breath_Mode" />
+                    android:entries="@array/breath_Mode" />
             </LinearLayout>
 
             <LinearLayout
@@ -80,7 +80,7 @@
                     style="@style/spinner_style"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:entries="@+array/breath_O2" />
+                    android:entries="@array/breath_O2" />
             </LinearLayout>
 
 
@@ -112,7 +112,7 @@
                     android:layout_width="120dp"
                     style="@style/spinner_style"
                     android:layout_height="wrap_content"
-                    android:entries="@+array/breath_Frequency" />
+                    android:entries="@array/breath_Frequency" />
             </LinearLayout>
 
             <LinearLayout
@@ -135,7 +135,7 @@
                     style="@style/spinner_style"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:entries="@+array/breath_Tidal" />
+                    android:entries="@array/breath_Tidal" />
             </LinearLayout>
 
 

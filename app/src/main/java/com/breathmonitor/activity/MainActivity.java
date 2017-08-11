@@ -37,8 +37,8 @@ import com.breathmonitor.widgets.MySurfaceView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -49,6 +49,8 @@ import butterknife.OnClick;
 public class MainActivity extends Activity {
 
     //<editor-fold desc="控件">
+    @BindView(R.id.txt_lock)
+    Button txtLock;
     @BindView(R.id.co2Curve)
     MySurfaceView co2Curve;
     @BindView(R.id.spo2Curve)
@@ -132,9 +134,6 @@ public class MainActivity extends Activity {
     List<String> mSafeAlertMessage = new ArrayList<>();//生理参数报警
     List<String> mTechnologyMessage = new ArrayList<>();//技术报警
 
-    HashMap AlertMessage = new HashMap();
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -203,6 +202,7 @@ public class MainActivity extends Activity {
             Global.spo2_Com.Open("/dev/ttyMT3", 4800);//血氧
             Log.e(TAG, "串口打开成功！");
 
+            Global.mcu_Com.Write(Mcu_Parsing.breathAndSpo2On);//血氧和呼吸机上电
             Thread.sleep(50);
             Global.mcu_Com.Write(Mcu_Parsing.breathAndSpo2On);//血氧和呼吸机上电
         } catch (Exception ex) {
@@ -304,12 +304,6 @@ public class MainActivity extends Activity {
                     if (!"".equals(Global.breath.getB_Alarm())) {
                         if (!mTechnologyMessage.contains(Global.breath.getB_Alarm()))
                             mTechnologyMessage.add(Global.breath.getB_Alarm());
-                        if (!AlertMessage.containsKey(Global.breath.getB_Alarm())) {
-                            AlertMessage.put(Global.breath.getB_Alarm(), 0);
-                        } else {
-
-                        }
-
                     }
 
 
@@ -369,7 +363,19 @@ public class MainActivity extends Activity {
                 case 401:
                     format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     txtTime.setText(format.format(new Date()));
+
                     Alarm();
+
+                    if (Global.Mute) {
+                        if (Global.pause_time == Global.alarm_pause_time) {
+                            Mute();
+                            Global.pause_time = 0;
+                        } else {
+                            Global.pause_time++;
+                        }
+
+                    }
+
                     break;
                 default:
                     break;
@@ -381,48 +387,36 @@ public class MainActivity extends Activity {
 
     @OnClick({R.id.txt_time, R.id.img_voice, R.id.img_lock, R.id.breath_set, R.id.txt_switch, R.id.layout_resp, R.id.layout_etCo2, R.id.layout_spo2, R.id.layout_pulse})
     public void onViewClicked(View view) {
+        Bundle bundle;
+        Intent intent;
         switch (view.getId()) {
             case R.id.txt_time:
-                Log.e(TAG, "onViewClicked: 时间设置");
+                //Log.e(TAG, "onViewClicked: 时间设置");
 
                 break;
             case R.id.img_voice:
-                Log.e(TAG, "onViewClicked: 静音");
-                try {
-                    if (Global.voice) {
-                        imgVoice.setImageResource(R.mipmap.sound_off);
-                        Thread.sleep(100);
-                        Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.voice_off);
-                    } else {
-                        imgVoice.setImageResource(R.mipmap.sound_on);
-                        Thread.sleep(100);
-                        Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.voice_on);
-                    }
-                    Global.voice = !Global.voice;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                //Log.e(TAG, "onViewClicked: 静音");
+                Mute();
+
                 break;
             case R.id.img_lock:
-                imgPulseAlarm.setLevel(1);
-//                try {
-//                    Thread.sleep(50);
-//                    Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.alarm_off);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-                Log.e(TAG, "onViewClicked: 锁");
-                if (Global.lock) {
-                    imgLock.setImageResource(R.mipmap.unlock);
-                } else {
-                    imgLock.setImageResource(R.mipmap.lock);
-                }
+                //Log.e(TAG, "onViewClicked: 锁");
                 Global.lock = !Global.lock;
+                if (Global.lock) {
+                    imgLock.setImageResource(R.mipmap.lock);
+                    txtLock.setVisibility(View.VISIBLE);
+                } else {
+                    imgLock.setImageResource(R.mipmap.unlock);
+                    txtLock.setVisibility(View.GONE);
+                }
+
                 break;
             case R.id.breath_set:
-                Log.e(TAG, "onViewClicked: Breath");
-                Intent intent = new Intent(MainActivity.this, BreathActivity.class);
-                startActivity(intent);
+                //Log.e(TAG, "onViewClicked: Breath");
+                if (IsMinClickTime()) {
+                    intent = new Intent(MainActivity.this, BreathActivity.class);
+                    startActivity(intent);
+                }
                 break;
             case R.id.txt_switch:
                 if ("OFF".equals(txtSwitch.getText())) {
@@ -432,49 +426,74 @@ public class MainActivity extends Activity {
                 }
                 break;
             case R.id.layout_resp:
-
-                intent = new Intent(MainActivity.this, AlertActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("title", "呼吸");
-                bundle.putString("name", "Resp");
-                bundle.putString("limit_H", this.txtRespAlertH.getText().toString());
-                bundle.putString("limit_L", this.txtRespAlertL.getText().toString());
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (IsMinClickTime()) {
+                    intent = new Intent(MainActivity.this, AlertActivity.class);
+                    bundle = new Bundle();
+                    bundle.putString("title", "呼吸");
+                    bundle.putString("name", "Resp");
+                    bundle.putString("limit_H", this.txtRespAlertH.getText().toString());
+                    bundle.putString("limit_L", this.txtRespAlertL.getText().toString());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
                 break;
             case R.id.layout_etCo2:
-                intent = new Intent(MainActivity.this, AlertActivity.class);
-                bundle = new Bundle();
-                bundle.putString("title", "CO2");
-                bundle.putString("name", "EtCO2");
-                bundle.putString("limit_H", this.txtEtCo2AlertH.getText().toString());
-                bundle.putString("limit_L", this.txtEtCo2AlertL.getText().toString());
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (IsMinClickTime()) {
+                    intent = new Intent(MainActivity.this, AlertActivity.class);
+                    bundle = new Bundle();
+                    bundle.putString("title", "CO2");
+                    bundle.putString("name", "EtCO2");
+                    bundle.putString("limit_H", this.txtEtCo2AlertH.getText().toString());
+                    bundle.putString("limit_L", this.txtEtCo2AlertL.getText().toString());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
                 break;
             case R.id.layout_spo2:
-                intent = new Intent(MainActivity.this, AlertActivity.class);
-                bundle = new Bundle();
-                bundle.putString("title", "血氧");
-                bundle.putString("name", "SpO2");
-                bundle.putString("limit_H", this.txtSpo2AlertH.getText().toString());
-                bundle.putString("limit_L", this.txtSpo2AlertL.getText().toString());
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (IsMinClickTime()) {
+                    intent = new Intent(MainActivity.this, AlertActivity.class);
+                    bundle = new Bundle();
+                    bundle.putString("title", "血氧");
+                    bundle.putString("name", "SpO2");
+                    bundle.putString("limit_H", this.txtSpo2AlertH.getText().toString());
+                    bundle.putString("limit_L", this.txtSpo2AlertL.getText().toString());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
                 break;
             case R.id.layout_pulse:
-                intent = new Intent(MainActivity.this, AlertActivity.class);
-                bundle = new Bundle();
-                bundle.putString("title", "脉率");
-                bundle.putString("name", "Pulse");
-                bundle.putString("limit_H", this.txtPulseAlertH.getText().toString());
-                bundle.putString("limit_L", this.txtPulseAlertL.getText().toString());
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (IsMinClickTime()) {
+                    intent = new Intent(MainActivity.this, AlertActivity.class);
+                    bundle = new Bundle();
+                    bundle.putString("title", "脉率");
+                    bundle.putString("name", "Pulse");
+                    bundle.putString("limit_H", this.txtPulseAlertH.getText().toString());
+                    bundle.putString("limit_L", this.txtPulseAlertL.getText().toString());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
                 break;
         }
     }
 
+    //静音
+    private void Mute() {
+        try {
+            Global.Mute = !Global.Mute;
+            if (Global.Mute) {
+                imgVoice.setImageResource(R.mipmap.sound_off);
+                Thread.sleep(100);
+                Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.voice_off);
+            } else {
+                imgVoice.setImageResource(R.mipmap.sound_on);
+                Thread.sleep(100);
+                Mcu_Parsing.SendCmd(Global.mcu_Com, Mcu_Parsing.voice_on);
+            }
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     //呼吸机CO2解析线程
     private class BreathCO2Thread implements Runnable {
@@ -589,9 +608,9 @@ public class MainActivity extends Activity {
     }
 
 
+    //<editor-fold desc="报警判断">
     boolean isOneOrTwo = false;
 
-    //<editor-fold desc="报警判断">
     private void Alarm() {
         //呼吸率报警
         AddAlarmInfo(txtResp, txtRespAlertH, txtRespAlertL, imgRespAlarm, Global.resp_alarm, "呼吸率");
@@ -749,4 +768,22 @@ public class MainActivity extends Activity {
     };
     //</editor-fold>
 
+    //<editor-fold desc="判断按钮点击时间">
+    //设置点击间隔
+    public static final int MIN_CLICK_DELAY_TIME = 1000;
+    //上次点击时间
+    private long lastClickTime = 0;
+
+    private boolean IsMinClickTime() {
+        long currentTime = Calendar.getInstance().getTimeInMillis();
+        if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
+            lastClickTime = currentTime;
+            //Log.e("tag",""+lastClickTime);
+            //做你需要的点击事件
+            return true;
+        }
+        return false;
+
+    }
+    //</editor-fold>
 }
