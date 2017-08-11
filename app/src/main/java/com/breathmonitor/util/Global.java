@@ -32,8 +32,10 @@ public class Global {
     public static boolean isAlarmM = false;     //是否存在中级报警
     public static boolean isAlarmOff = false;   //是否已经关闭报警
 
-    public static int alarm_pause_time = 10;         //报警暂停时间 单位 秒
+    public static int alarm_pause_time = 120;         //报警暂停时间 单位 秒
     public static int pause_time = 0;           //当前报警已静音时间 单位 秒
+    public static int lock_start_time = 30;     //自动锁屏时间
+    public static int lock_time = 0;           //已经过的时间
     public static MonitorApplication mApp;
 
 }

@@ -365,6 +365,8 @@ public class MainActivity extends Activity {
                     txtTime.setText(format.format(new Date()));
 
                     Alarm();
+
+                    //<editor-fold desc="自动解除静音">
                     if (Global.Mute) {
                         if (Global.pause_time == Global.alarm_pause_time) {
                             Mute();
@@ -374,6 +376,18 @@ public class MainActivity extends Activity {
                         }
 
                     }
+                    //</editor-fold>
+
+                    //<editor-fold desc="自动锁屏">
+                    if (!Global.lock) {
+                        if (Global.lock_time == Global.lock_start_time) {
+                            Lock();
+                            Global.lock_time = 0;
+                        } else {
+                            Global.lock_time++;
+                        }
+                    }
+                    //</editor-fold>
 
                     break;
                 default:
@@ -400,14 +414,7 @@ public class MainActivity extends Activity {
                 break;
             case R.id.img_lock:
                 //Log.e(TAG, "onViewClicked: 锁");
-                Global.lock = !Global.lock;
-                if (Global.lock) {
-                    imgLock.setImageResource(R.mipmap.lock);
-                    txtLock.setVisibility(View.VISIBLE);
-                } else {
-                    imgLock.setImageResource(R.mipmap.unlock);
-                    txtLock.setVisibility(View.GONE);
-                }
+                Lock();
 
                 break;
             case R.id.breath_set:
@@ -472,6 +479,18 @@ public class MainActivity extends Activity {
                     startActivity(intent);
                 }
                 break;
+        }
+    }
+
+    //锁
+    private void Lock() {
+        Global.lock = !Global.lock;
+        if (Global.lock) {
+            imgLock.setImageResource(R.mipmap.lock);
+            txtLock.setVisibility(View.VISIBLE);
+        } else {
+            imgLock.setImageResource(R.mipmap.unlock);
+            txtLock.setVisibility(View.GONE);
         }
     }
 
