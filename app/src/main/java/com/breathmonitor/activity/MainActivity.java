@@ -79,6 +79,8 @@ public class MainActivity extends Activity {
     TextView txtFrequency;
     @BindView(R.id.txt_o2)
     TextView txtO2;
+    @BindView(R.id.co2_Waveform)
+    TextView co2Waveform;
     @BindView(R.id.img_resp_alarm)
     AlarmImageView imgRespAlarm;
     @BindView(R.id.layout_resp)
@@ -133,6 +135,7 @@ public class MainActivity extends Activity {
 
     List<String> mSafeAlertMessage = new ArrayList<>();//生理参数报警
     List<String> mTechnologyMessage = new ArrayList<>();//技术报警
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -299,6 +302,8 @@ public class MainActivity extends Activity {
                     } else {
                         txtResp.setText("--");
                     }
+                    //CO2曲线瞬时值
+                    co2Waveform.setText(String.valueOf(Global.co2Waveform));
 
                     //Log.e(TAG, co2.getEtco2() + "  " + co2.getFico2() + "  " + co2.getRr());
                     if (!"".equals(Global.breath.getB_Alarm())) {
@@ -421,6 +426,10 @@ public class MainActivity extends Activity {
                 //Log.e(TAG, "onViewClicked: Breath");
                 if (IsMinClickTime()) {
                     intent = new Intent(MainActivity.this, BreathActivity.class);
+                    bundle = new Bundle();
+                    bundle.putString("name", "Breath");
+                    bundle.putString("mode", "");
+                    intent.putExtras(bundle);
                     startActivity(intent);
                 }
                 break;
@@ -537,9 +546,11 @@ public class MainActivity extends Activity {
                         //CO2波形
                         if (data_co2.size() > 0) {
                             for (float i : data_co2) {
+                                Global.co2Waveform = i;
                                 co2Curve.setCurve(i);
                             }
                         } else {
+                            Global.co2Waveform = 0;
                             co2Curve.setCurve(-1);
                         }
                     }
@@ -765,6 +776,9 @@ public class MainActivity extends Activity {
             String name = intent.getExtras().getString("name");
             Log.e("TAG12", name);
             switch (name) {
+                case "Breath":
+                    txtMode.setText(intent.getExtras().getString("mode"));
+                    break;
                 case "Resp":
                     txtRespAlertH.setText(intent.getExtras().getString("limitH"));
                     txtRespAlertL.setText(intent.getExtras().getString("limitL"));
@@ -792,6 +806,7 @@ public class MainActivity extends Activity {
     //上次点击时间
     private long lastClickTime = 0;
 
+    //是否在最小点击时间内（防止多次点击造成程序多次响应）
     private boolean IsMinClickTime() {
         long currentTime = Calendar.getInstance().getTimeInMillis();
         if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {

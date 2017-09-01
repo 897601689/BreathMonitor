@@ -293,10 +293,27 @@
                 android:background="@mipmap/co2_curve"
                 android:orientation="horizontal">
 
-                <com.breathmonitor.widgets.MySurfaceView
-                    android:id="@+id/co2Curve"
-                    android:layout_width="640dp"
-                    android:layout_height="223dp" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <com.breathmonitor.widgets.MySurfaceView
+                        android:id="@+id/co2Curve"
+                        android:layout_width="640dp"
+                        android:layout_height="223dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.0"
+                        android:id="@+id/co2_Waveform"
+                        android:textSize="30sp"
+                        android:textColor="#2BFFFF"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginLeft="120dp" />
+                </RelativeLayout>
+
             </LinearLayout>
 
         </LinearLayout>

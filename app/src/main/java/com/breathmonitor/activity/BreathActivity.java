@@ -1,6 +1,7 @@
 package com.breathmonitor.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -61,7 +62,7 @@ public class BreathActivity extends Activity {
     String[] mTd12Items = new String[]{"300", "400"};
     String[] mTd15Items = new String[]{"200"};
     final String TAG = "BreathActivity";
-
+    public static final String action = "jason.broadcast.action";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,6 +208,10 @@ public class BreathActivity extends Activity {
                     Breath_Parsing.SendCmd(Global.breath_Com, Breath_Parsing.bSTidal, this.spinnerTidal.getSelectedItem().toString());
                     //</editor-fold>
                 }
+                Intent intent = new Intent(action);
+                intent.putExtra("name", "Breath");
+                intent.putExtra("mode", spinnerMode.getSelectedItem().toString());
+                sendBroadcast(intent);
                 finish();
                 break;
         }
