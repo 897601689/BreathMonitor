@@ -191,10 +191,10 @@ public class BreathActivity extends Activity {
                             Breath_Parsing.SendCmd(Global.breath_Com, Breath_Parsing.bSO2_21, null);
                             break;
                         case 1:
-                            Breath_Parsing.SendCmd(Global.breath_Com, Breath_Parsing.bSO2_40, null);
+                            Breath_Parsing.SendCmd(Global.breath_Com, Breath_Parsing.bSO2_30, null);
                             break;
                         case 2:
-                            Breath_Parsing.SendCmd(Global.breath_Com, Breath_Parsing.bSO2_30, null);
+                            Breath_Parsing.SendCmd(Global.breath_Com, Breath_Parsing.bSO2_40, null);
                             break;
                         case 3:
                             Breath_Parsing.SendCmd(Global.breath_Com, Breath_Parsing.bSO2_50, null);
