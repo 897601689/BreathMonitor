@@ -227,6 +227,8 @@ public class MainActivity extends Activity {
         Breath mBreath = Global.mApp.getBreathShared();
         if (mBreath != null) {
             Log.e(TAG, "initInfo: " + mBreath.toString());
+            Breath_Parsing.InitBreath(Global.breath_Com,mBreath.getB_Mode(),
+                    mBreath.getB_Tidal(),mBreath.getB_Hz(),mBreath.getB_O2());
         }
         Alert alert = Global.mApp.getAlertShared("Resp");
         Global.resp_alarm = alert.isAlarmSwitch();
@@ -291,17 +293,17 @@ public class MainActivity extends Activity {
                     }
                     txtO2.setText(String.valueOf(Global.breath.getB_O2()));
 
-                    if (co2.getEtco2() != 0) {
+                    //if (co2.getEtco2() != 0) {
                         txtEtCo2.setText(String.valueOf(co2.getEtco2()));
-                    } else {
-                        txtEtCo2.setText("--");
-                    }
+                    //} else {
+                    //    txtEtCo2.setText("--");
+                    //}
                     //txtFico2.setText(String.valueOf(co2.getFico2()));
-                    if (co2.getRr() != 0) {
+                    //if (co2.getRr() != 0) {
                         txtResp.setText(String.valueOf(co2.getRr()));
-                    } else {
-                        txtResp.setText("--");
-                    }
+                    //} else {
+                    //    txtResp.setText("--");
+                    //}
                     //CO2曲线瞬时值
                     co2Waveform.setText(String.valueOf(Global.co2Waveform));
 
@@ -329,11 +331,11 @@ public class MainActivity extends Activity {
                     progressBar.setProgress(spo2.getPi());
                     //Log.e(TAG,spo2.getSpo2_value()+" " +spo2.getPulse_value()+" "+spo2.getPi());
 
-                    if (!"".equals(spo2.getError())) {
+                    /*if (!"".equals(spo2.getError())) {
                         if (!mTechnologyMessage.contains(spo2.getError())) {
                             mTechnologyMessage.add(spo2.getError());
                         }
-                    }
+                    }*/
                     //</editor-fold>
                     break;
                 case 301://MCU

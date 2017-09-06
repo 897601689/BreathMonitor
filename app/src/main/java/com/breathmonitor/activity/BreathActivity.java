@@ -183,7 +183,7 @@ public class BreathActivity extends Activity {
                             Breath_Parsing.SendCmd(Global.breath_Com, Breath_Parsing.bSControl, null);
                             break;
                         case 1:
-                            Breath_Parsing.SendCmd(Global.breath_Com, Breath_Parsing.bSControl, null);
+                            Breath_Parsing.SendCmd(Global.breath_Com, Breath_Parsing.bSAuxiliary, null);
                             break;
                     }
                     switch ((int) spinnerO2.getSelectedItemId()) {

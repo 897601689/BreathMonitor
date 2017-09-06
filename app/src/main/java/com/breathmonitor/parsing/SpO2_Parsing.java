@@ -18,7 +18,7 @@ public class SpO2_Parsing {
     private int spo2_value;    // 血氧值
     private int pulse_value;   // 脉率值
     private String state;      // 血氧状态
-    private String error="";      // 错误状态
+    private String error = "";      // 错误状态
     private int pi;            //灌注指数
 
     public String getError() {
@@ -83,25 +83,24 @@ public class SpO2_Parsing {
                         if ((buffer[0] >> 4 & 0x1) == 1) {
                             state = "搜索时间太长";
                         }
-
+                        if ((buffer[0] >> 5 & 0x1) == 1) {
+                            state = "血氧导联脱落";//未接传感器
+                        }
                         if ((buffer[0] >> 6 & 0x1) == 1) {
                             state = "脉搏跳动声";
-                        }
-
-                        if ((buffer[3] >> 5 & 0x1) == 1) {
-                            state = "搜索脉搏";
                         } else {
                             state = "";
                         }
 
-                        if ((buffer[0] >> 5 & 0x1) == 1) {
-                            error = "血氧导联脱落";//未接传感器
-                        }
                         if ((buffer[3] >> 4 & 0x1) == 1) {
                             error = "血氧指夹空";//传感器错误
+                        }
+                        if ((buffer[3] >> 5 & 0x1) == 1) {
+                            error = "";//搜索脉搏
                         } else {
                             error = "";
                         }
+
 
                         spo2_Curve.add(buffer[1] & 0x7F);   //体积描记图
                         pi = buffer[2] & 0xF;    //棒图

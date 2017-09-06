@@ -122,15 +122,15 @@ public class Breath_Parsing {
     private String battery;
 
     /// 呼吸机起停状态
-    private String b_State="OFF";
+    private String b_State = "OFF";
     /// 呼吸机潮气量
     private String b_Tidal;
     /// 呼吸机空氧混合模式
     private String b_Mode;
     /// 呼吸机氧气浓度
-    private String b_O2="--";
+    private String b_O2 = "--";
     /// 呼吸机报警
-    private String b_Alarm="";
+    private String b_Alarm = "";
     /// 呼吸机气道压力
     private String b_Pmb;
 
@@ -160,7 +160,7 @@ public class Breath_Parsing {
         /*int len = serialPortData.length;
         for (int i = 0; i < len; i++)   //全部读出
             buffer.add(serialPortData[i]);*/
-
+        Clear();
         for (int i = 0; i < listData.size(); i++)   //全部读出
         {
             for (int j = 0; j < listData.get(i).length; j++) {
@@ -183,6 +183,7 @@ public class Breath_Parsing {
             }
         }
 
+        //Log.e("呼吸", "" + b_Alarm);
     }
 
 
@@ -468,10 +469,58 @@ public class Breath_Parsing {
         return data;
     }
 
-    public void GetBreathInfo(MySerialPort cmdPort){
-        SendCmd(cmdPort,bQMode,null);
-        SendCmd(cmdPort,bQTidal,null);
-        SendCmd(cmdPort,bQState,null);
-        SendCmd(cmdPort,bQO2,null);
+    //初始化呼吸器
+    public static void InitBreath(MySerialPort cmdPort, String Mode, String bTidal, String bHz, String O2) {
+
+        SendCmd(cmdPort, bSHz, bHz);
+        SendCmd(cmdPort, bSTidal, bTidal);
+        switch (Mode) {
+            case "控制":
+                SendCmd(cmdPort, bSControl, null);
+                break;
+            case "辅助":
+                SendCmd(cmdPort, bSAuxiliary, null);
+                break;
+        }
+        switch (O2) {
+            case "21":
+                SendCmd(cmdPort, bSO2_21, null);
+                break;
+            case "30":
+                SendCmd(cmdPort, bSO2_30, null);
+                break;
+            case "40":
+                SendCmd(cmdPort, bSO2_40, null);
+                break;
+            case "50":
+                SendCmd(cmdPort, bSO2_50, null);
+                break;
+            case "60":
+                SendCmd(cmdPort, bSO2_60, null);
+                break;
+
+        }
+
+    }
+
+    //获取呼吸器当前信息
+    public void GetBreathInfo(MySerialPort cmdPort) {
+        SendCmd(cmdPort, bQMode, null);
+        SendCmd(cmdPort, bQTidal, null);
+        SendCmd(cmdPort, bQState, null);
+        SendCmd(cmdPort, bQO2, null);
+    }
+
+    //清空收到的命令 避免重复
+    private void Clear() {
+//        key = null;
+//        battery = null;
+//
+//        b_State = null;
+//        b_Tidal = null;
+//        b_Mode = null;
+//        b_Pmb = null;
+//        b_O2 = null;
+        b_Alarm = "";
     }
 }
