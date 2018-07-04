@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cancel_layout"
     android:layout_width="890dp"
     android:layout_height="590dp"
@@ -57,7 +58,9 @@
                     style="@style/spinner_style"
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:entries="@array/breath_Mode" />
+                    android:entries="@array/breath_Mode"
+
+                    tools:entries="@array/breath_Mode"/>
             </LinearLayout>
 
             <LinearLayout

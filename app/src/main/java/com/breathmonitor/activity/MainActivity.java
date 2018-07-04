@@ -1,5 +1,6 @@
 package com.breathmonitor.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -28,6 +29,7 @@ import com.breathmonitor.bean.Breath;
 import com.breathmonitor.parsing.Breath_Parsing;
 import com.breathmonitor.parsing.CO2_Parsing;
 import com.breathmonitor.parsing.Mcu_Parsing;
+import com.breathmonitor.parsing.Mcu_Parsing2;
 import com.breathmonitor.parsing.SpO2_Parsing;
 import com.breathmonitor.parsing.co2Breath.BreathCO2;
 import com.breathmonitor.util.Global;
@@ -131,10 +133,13 @@ public class MainActivity extends Activity {
     CO2_Parsing co2 = new CO2_Parsing();
     SpO2_Parsing spo2 = new SpO2_Parsing(); //血氧协议解析
     Mcu_Parsing mcu = new Mcu_Parsing();//单片机协议解析
+    Mcu_Parsing2 mcu2 = new Mcu_Parsing2();//单片机协议解析
     SimpleDateFormat format;
 
     List<String> mSafeAlertMessage = new ArrayList<>();//生理参数报警
     List<String> mTechnologyMessage = new ArrayList<>();//技术报警
+    @BindView(R.id.layout_breath_set)
+    LinearLayout layoutBreathSet;
 
 
     @Override
@@ -200,14 +205,14 @@ public class MainActivity extends Activity {
         spo2Curve.setAmplitude(0);
         spo2Curve.setMax(127);
         try {
-            Global.mcu_Com.Open("/dev/ttyMT1", 9600);//电源板
-            Global.breath_Com.Open("/dev/ttyMT2", 38400);//呼吸机
+            Global.mcu_Com.Open("/dev/ttysWK1", 9600);//电源板 ttysWK1
+            Global.breath_Com.Open("/dev/ttysWK3", 38400);//呼吸机
             Global.spo2_Com.Open("/dev/ttyMT3", 4800);//血氧
             Log.e(TAG, "串口打开成功！");
 
-            Global.mcu_Com.Write(Mcu_Parsing.breathAndSpo2On);//血氧和呼吸机上电
-            Thread.sleep(50);
-            Global.mcu_Com.Write(Mcu_Parsing.breathAndSpo2On);//血氧和呼吸机上电
+            //Global.mcu_Com.Write(Mcu_Parsing.breathAndSpo2On);//血氧和呼吸机上电
+            //Thread.sleep(50);
+            //Global.mcu_Com.Write(Mcu_Parsing.breathAndSpo2On);//血氧和呼吸机上电
         } catch (Exception ex) {
             Log.e(TAG, "串口打开失败！");
         }
@@ -227,8 +232,8 @@ public class MainActivity extends Activity {
         Breath mBreath = Global.mApp.getBreathShared();
         if (mBreath != null) {
             Log.e(TAG, "initInfo: " + mBreath.toString());
-            Breath_Parsing.InitBreath(Global.breath_Com,mBreath.getB_Mode(),
-                    mBreath.getB_Tidal(),mBreath.getB_Hz(),mBreath.getB_O2());
+            Breath_Parsing.InitBreath(Global.breath_Com, mBreath.getB_Mode(),
+                    mBreath.getB_Tidal(), mBreath.getB_Hz(), mBreath.getB_O2());
         }
         Alert alert = Global.mApp.getAlertShared("Resp");
         Global.resp_alarm = alert.isAlarmSwitch();
@@ -279,6 +284,7 @@ public class MainActivity extends Activity {
 
     //<editor-fold desc="消息线程处理">
 
+    @SuppressLint("HandlerLeak")
     public Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -294,13 +300,13 @@ public class MainActivity extends Activity {
                     txtO2.setText(String.valueOf(Global.breath.getB_O2()));
 
                     //if (co2.getEtco2() != 0) {
-                        txtEtCo2.setText(String.valueOf(co2.getEtco2()));
+                    txtEtCo2.setText(String.valueOf(co2.getEtco2()));
                     //} else {
                     //    txtEtCo2.setText("--");
                     //}
                     //txtFico2.setText(String.valueOf(co2.getFico2()));
                     //if (co2.getRr() != 0) {
-                        txtResp.setText(String.valueOf(co2.getRr()));
+                    txtResp.setText(String.valueOf(co2.getRr()));
                     //} else {
                     //    txtResp.setText("--");
                     //}
@@ -339,9 +345,13 @@ public class MainActivity extends Activity {
                     //</editor-fold>
                     break;
                 case 301://MCU
+
+                    //imgBattery.setImageResource(R.mipmap.battery100);
                     //<editor-fold desc="MCU电池状态">
-                    //Log.e("McuData", "" + mcu.getAc_dc());
-                    if (mcu.getAc_dc() == 1) {
+                    //Log.e("McuData", "" + mcu2.getBat_State());
+
+
+                    /*if (mcu.getAc_dc() == 1) {
                         imgBattery.setImageResource(R.mipmap.battery);
                     } else {
                         switch (mcu.getBat_State()) {
@@ -364,7 +374,35 @@ public class MainActivity extends Activity {
                                 imgBattery.setImageResource(R.mipmap.battery0);
                                 break;
                         }
+                    }*/
+
+                    if (mcu2.getAc_dc() == 1) {
+                        imgBattery.setImageResource(R.mipmap.battery);
+                    } else {
+                       // Log.e(TAG, "handleMessage: "+mcu2.getBat_State() );
+                        switch (mcu2.getBat_State()) {
+                            case "电量高":
+                                imgBattery.setImageResource(R.mipmap.battery80);
+                                break;
+                            case "电量中":
+                                imgBattery.setImageResource(R.mipmap.battery60);
+                                break;
+                            case "电量低":
+                                imgBattery.setImageResource(R.mipmap.battery40);
+                                break;
+                            case "欠压报警":
+                                imgBattery.setImageResource(R.mipmap.battery20);
+                                break;
+                            case "充满":
+                                imgBattery.setImageResource(R.mipmap.battery100);
+                                break;
+                            default:
+                                imgBattery.setImageResource(R.mipmap.battery0);
+                                break;
+                        }
                     }
+
+
                     //</editor-fold>
                     break;
                 case 401:
@@ -405,7 +443,7 @@ public class MainActivity extends Activity {
     };
     //</editor-fold>
 
-    @OnClick({R.id.txt_time, R.id.img_voice, R.id.img_lock, R.id.breath_set, R.id.txt_switch, R.id.layout_resp, R.id.layout_etCo2, R.id.layout_spo2, R.id.layout_pulse})
+    @OnClick({R.id.layout_breath_set,R.id.txt_time, R.id.img_voice, R.id.img_lock, R.id.breath_set, R.id.txt_switch, R.id.layout_resp, R.id.layout_etCo2, R.id.layout_spo2, R.id.layout_pulse})
     public void onViewClicked(View view) {
         Bundle bundle;
         Intent intent;
@@ -435,6 +473,16 @@ public class MainActivity extends Activity {
                     startActivity(intent);
                 }
                 break;
+            case R.id.layout_breath_set:
+                if (IsMinClickTime()) {
+                    intent = new Intent(MainActivity.this, BreathActivity.class);
+                    bundle = new Bundle();
+                    bundle.putString("name", "Breath");
+                    bundle.putString("mode", "");
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+                break;
             case R.id.txt_switch:
                 if ("OFF".equals(txtSwitch.getText())) {
                     Breath_Parsing.SendCmd(Global.breath_Com, Breath_Parsing.bOn, null);
@@ -448,8 +496,8 @@ public class MainActivity extends Activity {
                     bundle = new Bundle();
                     bundle.putString("title", "呼吸");
                     bundle.putString("name", "Resp");
-                    bundle.putString("limit_H", this.txtRespAlertH.getText().toString());
-                    bundle.putString("limit_L", this.txtRespAlertL.getText().toString());
+                    bundle.putString("limit_H", txtRespAlertH.getText().toString());
+                    bundle.putString("limit_L", txtRespAlertL.getText().toString());
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -460,8 +508,8 @@ public class MainActivity extends Activity {
                     bundle = new Bundle();
                     bundle.putString("title", "CO2");
                     bundle.putString("name", "EtCO2");
-                    bundle.putString("limit_H", this.txtEtCo2AlertH.getText().toString());
-                    bundle.putString("limit_L", this.txtEtCo2AlertL.getText().toString());
+                    bundle.putString("limit_H", txtEtCo2AlertH.getText().toString());
+                    bundle.putString("limit_L", txtEtCo2AlertL.getText().toString());
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -472,8 +520,8 @@ public class MainActivity extends Activity {
                     bundle = new Bundle();
                     bundle.putString("title", "血氧");
                     bundle.putString("name", "SpO2");
-                    bundle.putString("limit_H", this.txtSpo2AlertH.getText().toString());
-                    bundle.putString("limit_L", this.txtSpo2AlertL.getText().toString());
+                    bundle.putString("limit_H", txtSpo2AlertH.getText().toString());
+                    bundle.putString("limit_L", txtSpo2AlertL.getText().toString());
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -484,8 +532,8 @@ public class MainActivity extends Activity {
                     bundle = new Bundle();
                     bundle.putString("title", "脉率");
                     bundle.putString("name", "Pulse");
-                    bundle.putString("limit_H", this.txtPulseAlertH.getText().toString());
-                    bundle.putString("limit_L", this.txtPulseAlertL.getText().toString());
+                    bundle.putString("limit_H", txtPulseAlertH.getText().toString());
+                    bundle.putString("limit_L", txtPulseAlertL.getText().toString());
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -524,6 +572,8 @@ public class MainActivity extends Activity {
         }
     }
 
+
+
     //呼吸机CO2解析线程
     private class BreathCO2Thread implements Runnable {
 
@@ -533,8 +583,9 @@ public class MainActivity extends Activity {
                 Thread.sleep(1000);
 
                 while (true) {
-                    Thread.sleep(50);
+                    Thread.sleep(100);
                     Global.breath.GetBreathInfo(Global.breath_Com);
+
                     BreathCo2.Parsing();
                     List<byte[]> co2s = BreathCo2.getCo2Data();
                     List<byte[]> breaths = BreathCo2.getBreathData();
@@ -548,6 +599,7 @@ public class MainActivity extends Activity {
                         //CO2波形
                         if (data_co2.size() > 0) {
                             for (float i : data_co2) {
+                                Thread.sleep(5);
                                 Global.co2Waveform = i;
                                 co2Curve.setCurve(i);
                             }
@@ -612,8 +664,10 @@ public class MainActivity extends Activity {
                 Thread.sleep(2000);
                 while (true) {
                     Thread.sleep(2000);
-                    Global.mcu_Com.Write(Mcu_Parsing.mcuData);
-                    mcu.Parsing(Global.mcu_Com);
+                    //Global.mcu_Com.Write(Mcu_Parsing.mcuData);
+                    //mcu.Parsing(Global.mcu_Com);
+                    Mcu_Parsing2.SendMcuCmd(Global.mcu_Com, Mcu_Parsing2.cellCmd);//查询电池信息
+                    mcu2.Parsing(Global.mcu_Com);
                     mHandler.sendEmptyMessage(301);
                 }
             } catch (Exception ex) {

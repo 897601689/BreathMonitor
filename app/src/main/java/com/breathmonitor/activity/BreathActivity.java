@@ -1,5 +1,6 @@
 package com.breathmonitor.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -75,6 +76,21 @@ public class BreathActivity extends Activity {
     }
 
     private void init() {
+        ArrayAdapter<String> adapter;
+        adapter = new ArrayAdapter<>(BreathActivity.this, R.layout.simple_spinner_item,getResources().getStringArray(R.array.breath_Mode));
+        adapter.setDropDownViewResource(R.layout.my_drop_down_item);
+        //绑定 Adapter到控件
+        spinnerMode.setAdapter(adapter);
+
+        adapter = new ArrayAdapter<>(BreathActivity.this, R.layout.simple_spinner_item, getResources().getStringArray(R.array.breath_O2));
+        adapter.setDropDownViewResource(R.layout.my_drop_down_item);
+        //绑定 Adapter到控件
+        spinnerO2.setAdapter(adapter);
+
+        adapter = new ArrayAdapter<>(BreathActivity.this, R.layout.simple_spinner_item, getResources().getStringArray(R.array.breath_Frequency));
+        adapter.setDropDownViewResource(R.layout.my_drop_down_item);
+        //绑定 Adapter到控件
+        spinnerHz.setAdapter(adapter);
 
         final Breath mBreath = Global.mApp.getBreathShared();
         String ss = mBreath.getB_Hz();
@@ -120,8 +136,8 @@ public class BreathActivity extends Activity {
                     array = mTd15Items;
                     //adapter = new ArrayAdapter<>(BreathActivity.this, R.layout.simple_spinner_item, mTd15Items);
                     //adapter.setDropDownViewResource(R.layout.my_drop_down_item);
-                    adapter = new ArrayAdapter<>(BreathActivity.this, android.R.layout.simple_spinner_item, mTd15Items);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    adapter = new ArrayAdapter<>(BreathActivity.this, R.layout.simple_spinner_item, mTd15Items);
+                    adapter.setDropDownViewResource(R.layout.my_drop_down_item);
                     //绑定 Adapter到控件
                     spinnerTidal.setAdapter(adapter);
                 }

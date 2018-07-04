@@ -74,6 +74,7 @@
 
         <!-- 呼吸标题 -->
         <LinearLayout
+            android:id="@+id/layout_breath_set"
             android:layout_width="1280dp"
             android:layout_height="40dp"
             android:background="@mipmap/bg_top2">

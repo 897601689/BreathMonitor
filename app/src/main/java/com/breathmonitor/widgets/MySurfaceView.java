@@ -172,7 +172,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             drawCurve();
             Thread.sleep(1000);
             while (mIsDrawing) {
-                //Thread.sleep(50);
+                Thread.sleep(5);
                 drawCurve();
             }
         } catch (InterruptedException e) {

@@ -1,5 +1,7 @@
 package com.breathmonitor.parsing;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,10 +75,10 @@ public class Mcu_Parsing {
                     }
                 }
             }
-            //Log.e("MCU",""+ac_dc);
+            Log.e("MCU",""+ac_dc);
 
         } catch (Exception ex) {
-            // Log.e("ERROR", ex.toString());
+             Log.e("ERROR", ex.toString());
         }
 
     }

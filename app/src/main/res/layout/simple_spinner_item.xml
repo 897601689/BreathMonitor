@@ -9,4 +9,5 @@
     android:paddingRight="5dip"
     android:singleLine="true"
     android:textAlignment="center"
-    android:textColor="#808080" />
+    android:textColor="#505050" />
+    <!--android:textColor="#808080"-->

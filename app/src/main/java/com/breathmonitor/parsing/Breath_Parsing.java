@@ -471,44 +471,58 @@ public class Breath_Parsing {
 
     //初始化呼吸器
     public static void InitBreath(MySerialPort cmdPort, String Mode, String bTidal, String bHz, String O2) {
+        try {
+            Thread.sleep(50);
+            SendCmd(cmdPort, bSHz, bHz);
+            Thread.sleep(50);
+            SendCmd(cmdPort, bSTidal, bTidal);
+            Thread.sleep(50);
+            switch (Mode) {
+                case "控制":
+                    SendCmd(cmdPort, bSControl, null);
+                    break;
+                case "辅助":
+                    SendCmd(cmdPort, bSAuxiliary, null);
+                    break;
+            }
+            Thread.sleep(50);
+            switch (O2) {
+                case "21":
+                    SendCmd(cmdPort, bSO2_21, null);
+                    break;
+                case "30":
+                    SendCmd(cmdPort, bSO2_30, null);
+                    break;
+                case "40":
+                    SendCmd(cmdPort, bSO2_40, null);
+                    break;
+                case "50":
+                    SendCmd(cmdPort, bSO2_50, null);
+                    break;
+                case "60":
+                    SendCmd(cmdPort, bSO2_60, null);
+                    break;
 
-        SendCmd(cmdPort, bSHz, bHz);
-        SendCmd(cmdPort, bSTidal, bTidal);
-        switch (Mode) {
-            case "控制":
-                SendCmd(cmdPort, bSControl, null);
-                break;
-            case "辅助":
-                SendCmd(cmdPort, bSAuxiliary, null);
-                break;
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        switch (O2) {
-            case "21":
-                SendCmd(cmdPort, bSO2_21, null);
-                break;
-            case "30":
-                SendCmd(cmdPort, bSO2_30, null);
-                break;
-            case "40":
-                SendCmd(cmdPort, bSO2_40, null);
-                break;
-            case "50":
-                SendCmd(cmdPort, bSO2_50, null);
-                break;
-            case "60":
-                SendCmd(cmdPort, bSO2_60, null);
-                break;
-
-        }
-
     }
 
     //获取呼吸器当前信息
     public void GetBreathInfo(MySerialPort cmdPort) {
-        SendCmd(cmdPort, bQMode, null);
-        SendCmd(cmdPort, bQTidal, null);
-        SendCmd(cmdPort, bQState, null);
-        SendCmd(cmdPort, bQO2, null);
+        try {
+            Thread.sleep(50);
+            SendCmd(cmdPort, bQMode, null);
+            Thread.sleep(50);
+            SendCmd(cmdPort, bQTidal, null);
+            Thread.sleep(50);
+            SendCmd(cmdPort, bQState, null);
+            Thread.sleep(50);
+            SendCmd(cmdPort, bQO2, null);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     //清空收到的命令 避免重复
